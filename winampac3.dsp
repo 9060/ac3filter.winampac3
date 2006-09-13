@@ -123,6 +123,10 @@ SOURCE=.\registry.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\resource.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\winamp.cpp
 # End Source File
 # Begin Source File
