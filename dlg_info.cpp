@@ -93,17 +93,17 @@ InfoDlg::init_controls()
     file.stats();
     file.get_info(buf, sizeof(buf));
     cr2crlf(buf, sizeof(buf));
-    SendDlgItemMessage(hwnd, IDC_EDT_INFO, WM_SETTEXT, 0, (LPARAM)buf);
+    SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)buf);
   }
   else if (file.open(&dts, filename) && file.probe())
   {
     file.stats();
     file.get_info(buf, sizeof(buf));
     cr2crlf(buf, sizeof(buf));
-    SendDlgItemMessage(hwnd, IDC_EDT_INFO, WM_SETTEXT, 0, (LPARAM)buf);
+    SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)buf);
   }
   else
   {
-    SendDlgItemMessage(hwnd, IDC_EDT_INFO, WM_SETTEXT, 0, (LPARAM)"Cannot determine file format");
+    SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)"Cannot determine file format");
   }
 }

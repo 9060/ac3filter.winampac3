@@ -11,6 +11,13 @@
 #define SINK_DSOUND3D 2
 #define SINK_FILE     3
 
+// SPDIF mode
+#define SPDIF_MODE_NONE                0  // see dvd_graph.h
+#define SPDIF_MODE_DISABLED            1  // see dvd_graph.h
+#define SPDIF_MODE_PASSTHROUGH         2  // see dvd_graph.h
+#define SPDIF_MODE_ENCODE              3  // see dvd_graph.h
+
+// Registry keys
 #define REG_KEY        "Software\\WinampAC3"
 #define REG_KEY_PRESET "Software\\WinampAC3\\preset"
 #define REG_KEY_MATRIX "Software\\WinampAC3\\matrix"
@@ -74,11 +81,10 @@ public:
 
   /////////////////////////////////////////////////////////
   // User interface (used in config dialog)
-/*
+
   STDMETHOD (get_playback_time)(vtime_t *time) = 0;
   STDMETHOD (get_cpu_usage)(double *cpu_usage) = 0;
   STDMETHOD (get_env)(char *buf, int size) = 0;
-*/
 };
 
 

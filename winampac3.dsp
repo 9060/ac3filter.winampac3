@@ -95,11 +95,31 @@ PostBuild_Cmds=_copy_test.bat
 # Name "winampac3 - Win32 Debug"
 # Begin Source File
 
+SOURCE=.\ac3filter.bmp
+# End Source File
+# Begin Source File
+
 SOURCE=.\com_dec.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\com_dec.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\controls.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\controls.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg_conf.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg_conf.h
 # End Source File
 # Begin Source File
 
@@ -124,6 +144,14 @@ SOURCE=.\registry.cpp
 # Begin Source File
 
 SOURCE=.\resource.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\tab.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tab.h
 # End Source File
 # Begin Source File
 

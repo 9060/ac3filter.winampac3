@@ -1,7 +1,9 @@
 #include "winamp.h"
 #include "winampac3.h"
 
+#include "resource.h"
 #include "dlg_info.h"
+#include "dlg_conf.h"
 
 // reqired to probe a fileand determine file info
 #include "parsers\file_parser.h"
@@ -89,30 +91,28 @@ HINSTANCE     hinstance;
 
 void config(HWND parent)
 {
-/*
   TabDlg dlg(hinstance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
-  CWinampAC3_conf *sheet;
-  sheet = CWinampAC3_conf::create_main(hinstance, winampac3);
+  ConfigDlg *sheet;
+  sheet = ConfigDlg::create_main(hinstance, winampac3);
   dlg.add_page(0, sheet, "Main");
-  sheet = CWinampAC3_conf::create_mixer(hinstance, winampac3);
+  sheet = ConfigDlg::create_mixer(hinstance, winampac3);
   dlg.add_page(1, sheet, "Mixer");
-  sheet = CWinampAC3_conf::create_eq(hinstance, winampac3);
-  dlg.add_page(2, sheet, "Equalizer");
-  sheet = CWinampAC3_conf::create_about(hinstance, winampac3);
-  dlg.add_page(3, sheet, "About");
+  sheet = ConfigDlg::create_gains(hinstance, winampac3);
+  dlg.add_page(2, sheet, "Gains");
+  sheet = ConfigDlg::create_system(hinstance, winampac3);
+  dlg.add_page(3, sheet, "System");
+  sheet = ConfigDlg::create_about(hinstance, winampac3);
+  dlg.add_page(4, sheet, "About");
   dlg.exec("WinampAC3 configuration");
-*/
 }
 
 void about(HWND parent)
 {
-/*
   TabDlg dlg(hinstance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
-  CWinampAC3_conf *sheet;
-  sheet = CWinampAC3_conf::create_about(hinstance, winampac3);
+  ConfigDlg *sheet;
+  sheet = ConfigDlg::create_about(hinstance, winampac3);
   dlg.add_page(0, sheet, "About");
   dlg.exec("WinampAC3 configuration");
-*/
 }
 
 void init() 

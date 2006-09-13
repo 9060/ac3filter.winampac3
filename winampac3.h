@@ -75,11 +75,10 @@ public:
 
   /////////////////////////////////////////////////////////
   // User interface (used in config dialog)
-/*
-  STDMETHOD (get_playback_time)(vtime_t *time);
-  STDMETHOD (get_cpu_usage)(double *cpu_usage);
-  STDMETHOD (get_env)(char *buf, int size);
-*/
+
+  STDMETHODIMP get_playback_time(vtime_t *time);
+  STDMETHODIMP get_cpu_usage(double *cpu_usage);
+  STDMETHODIMP get_env(char *buf, int size);
 };
 
 

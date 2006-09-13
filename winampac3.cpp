@@ -234,3 +234,33 @@ WinampAC3::process()
   cpu.stop();
   return 0;
 }
+
+
+/////////////////////////////////////////////////////////
+// User interface (used in config dialog)
+
+STDMETHODIMP 
+WinampAC3::get_playback_time(vtime_t *_time)
+{
+  *_time = dsound.get_playback_time();
+  return S_OK;
+}
+
+// CPU usage
+STDMETHODIMP 
+WinampAC3::get_cpu_usage(double *_cpu_usage)
+{
+  *_cpu_usage = cpu.usage();
+  return S_OK;
+}
+
+// Build and environment info
+STDMETHODIMP
+WinampAC3::get_env(char *_buf, int _size)
+{
+  const char *env = valib_build_info();
+  int len = strlen(env) + 1;
+  memcpy(_buf, env, MIN(_size, len));
+  cr2crlf(_buf, _size);
+  return S_OK;
+}

@@ -1,0 +1,32 @@
+<b>0.60b</b> - 01.09.2003
+  * Totally rewrited
+  * Uses AC3Filter v0.70b AC3 decoding library
+  + Own sound renderer
+  + SPDIF output support
+  + On-fly speaker configuration change
+  + Inverse byteorder files support added
+    (can now play files from AC3-Audio CD)
+
+<b>0.5b</b> - 27.11.2002
+  + multichannel support added
+  + fixed: scratch when overload
+
+<b>0.4b</b> - 25.11.2002
+  - 'Expand stereo' and 'Voice control' controls 
+    removed. It will be always on.
+  * Bug with channel mapping fixed
+  * Bug with rematrixing fixed
+
+<b>0.3b</b> - 21.11.2002
+  + CPU usage is working now
+  + PES support added
+  + Information panel (Alt-3) added
+  * Fixed: one pass normalize did not work
+
+<b>0.2a</b> - 20.11.2002
+  * Everything was rewritten :)
+  + Configuration dialog added.
+  + Settings are saved to registry.
+
+<b>0.1a</b> - 30.10.2002
+  * first working alfa
