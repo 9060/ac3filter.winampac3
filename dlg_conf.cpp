@@ -4,6 +4,7 @@
 #include <commctrl.h>
 #include <math.h>
 
+#include "winampac3_ver.h"
 #include "guids.h"
 #include "dlg_conf.h"
 
@@ -572,13 +573,12 @@ ConfigDlg::init_controls()
 
   /////////////////////////////////////
   // Version
-/*
+
   char ver1[255];
   char ver2[255];
   GetDlgItemText(hwnd, IDC_VER, ver1, array_size(ver1));
   sprintf(ver2, ver1, WINAMPAC3_VER);
   SetDlgItemText(hwnd, IDC_VER, ver2);
-*/
 }
 
 void 

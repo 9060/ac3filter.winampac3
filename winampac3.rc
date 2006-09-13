@@ -68,7 +68,7 @@ BEGIN
     GROUPBOX        "Build info",IDC_STATIC,203,7,187,64
     EDITTEXT        IDC_EDT_ENV,209,16,176,52,ES_MULTILINE | ES_AUTOHSCROLL | 
                     ES_READONLY | NOT WS_BORDER | WS_VSCROLL
-    RTEXT           "AC3Filter ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
+    RTEXT           "WinampAC3 ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
                     IDC_VER,7,190,383,8
     EDITTEXT        IDC_EDT_CREDITS,209,82,176,73,ES_MULTILINE | 
                     ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER | 
@@ -207,7 +207,7 @@ BEGIN
     CONTROL         "Slider3",IDC_SLIDER_LFE,"msctls_trackbar32",TBS_VERT | 
                     TBS_BOTH | WS_TABSTOP,137,22,27,56
     EDITTEXT        IDC_EDT_LFE,140,79,23,14,ES_AUTOHSCROLL
-    RTEXT           "AC3Filter ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
+    RTEXT           "WinampAC3 ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
                     IDC_VER,7,190,383,8
 END
 
@@ -272,7 +272,7 @@ BEGIN
     LTEXT           "Allow:",IDC_STATIC,221,63,20,8
     CONTROL         "Use AC3 encoder",IDC_CHK_SPDIF_ENCODE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,207,19,72,10
-    RTEXT           "AC3Filter ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
+    RTEXT           "WinampAC3 ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
                     IDC_VER,7,190,383,8
 END
 
@@ -424,7 +424,7 @@ BEGIN
     CONTROL         "Bass redir:",IDC_CHK_BASS_REDIR,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,90,171,49,10
     EDITTEXT        IDC_EDT_BASS_FREQ,140,169,23,14,ES_AUTOHSCROLL
-    RTEXT           "AC3Filter ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
+    RTEXT           "WinampAC3 ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
                     IDC_VER,7,190,383,8
 END
 
@@ -528,8 +528,7 @@ BEGIN
     LTEXT           "0dB",IDC_STATIC,209,46,15,8,0,WS_EX_RIGHT
     CONTROL         202,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE | 
                     WS_BORDER,141,101,115,84
-    CONTROL         19811,IDC_LOGO,"Static",SS_BITMAP,206,143,50,22
-    RTEXT           "AC3Filter ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
+    RTEXT           "WinampAC3 ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
                     IDC_VER,7,190,383,8
 END
 
@@ -627,7 +626,7 @@ END
 // Bitmap
 //
 
-IDB_LOGO                BITMAP  DISCARDABLE     "ac3filter.bmp"
+IDB_LOGO                BITMAP  DISCARDABLE     "winampac3.bmp"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
