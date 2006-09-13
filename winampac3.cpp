@@ -69,7 +69,7 @@ WinampAC3::play(const char *_filename)
   if (user_spk.format == FORMAT_UNKNOWN)
   {
     out_spk.format = FORMAT_PCM16;
-    out_spk.level = 32768;
+    out_spk.level = 32767;
   }
   else
   {
@@ -155,6 +155,31 @@ WinampAC3::get_pos()
 {
   return (int)(dsound.get_playback_time() * 1000);
 }
+
+// Playback options
+
+void
+WinampAC3::set_volume(int volume)
+{
+  // Winamp volume is 0-255 but PlaybackControl uses decibels.
+  // Therefore we need to convert units:
+  // 0 -> -100dB
+  // 255 -> 0dB
+
+  dsound.set_vol(double(volume) / 255 * 100 - 100);
+}
+
+void
+WinampAC3::set_pan(int pan)
+{
+  // Winamp pan is -128 - +128 but PlaybackControl uses decibels.
+  // Therefore we need to convert units:
+  // -128 -> -100dB
+  // +128 -> +100dB
+
+  dsound.set_pan(double(pan) / 128 * 100);
+}
+
 
 
 DWORD 

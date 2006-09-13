@@ -67,6 +67,10 @@ public:
   virtual int   get_length();
   virtual int   get_pos();
 
+  // Playback options
+  virtual void  set_volume(int volume);
+  virtual void  set_pan(int pan);
+
   /////////////////////////////////////////////////////////
   // Other interfaces
 

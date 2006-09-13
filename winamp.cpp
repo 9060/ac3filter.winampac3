@@ -201,8 +201,9 @@ int  getlength()           { return winampac3->get_length();    }
 int  getoutputtime()       { return winampac3->get_pos();       }
 void setoutputtime(int seek_pos) { winampac3->seek(seek_pos);   }
 
-void setvolume(int volume) {}
-void setpan(int pan)       {}
+void setvolume(int volume) { winampac3->set_volume(volume);     }
+void setpan(int pan)       { winampac3->set_pan(pan);           }
+
 void eq_set(int on, char data[10], int preamp) {}
 
 
