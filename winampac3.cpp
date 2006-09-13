@@ -86,6 +86,7 @@ WinampAC3::play(const char *_filename)
   // setup
   dec.set_input(file.get_spk());
   dsound.set_input(out_spk);
+  dec.set_sink(&dsound);
 
   // run!
   state = state_start;
