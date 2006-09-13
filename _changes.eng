@@ -1,3 +1,27 @@
+<b>1.01a</b> - 
+  * Uses new valib (AC3Filter 1.09) and supports all its new features!
+  + DTS decoding support (including AVI/DTS and WAV/DTS)
+  + AC3/DTS SPDIF passthrough
+  + Real-time AC3 encoding for multichannel SPDIF output
+  + Extended decoder inforation
+  + SPDIF output options:
+  +   Enable/disable AC3 encoder
+  +   Enable/disable encoding of stereo PCM
+  +   Option to output SPDIF stream as PCM
+  +   Sample rate check
+  + Option to check output format support
+  + Sound card reinit after pause
+  * Time shift and jitter correction work with SPDIF output
+
+  + As-is output mode (without change of number of channgels)
+  * Level meters are now syncronized with playback
+  + More powerful dynamic range compression
+  + Attack/Release speed adjust
+  + Bass redirection
+  + Per-channel gain control
+  - equalizer
+  - save configuration to file
+
 <b>0.60b</b> - 01.09.2003
   * Totally rewrited
   * Uses AC3Filter v0.70b AC3 decoding library
