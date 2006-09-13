@@ -103,6 +103,14 @@ SOURCE=.\com_dec.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\dlg_info.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg_info.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\guids.cpp
 # End Source File
 # Begin Source File
@@ -132,6 +140,10 @@ SOURCE=.\winampac3.def
 # Begin Source File
 
 SOURCE=.\winampac3.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\winampac3.rc
 # End Source File
 # End Target
 # End Project

@@ -1,6 +1,8 @@
 #include "winamp.h"
 #include "winampac3.h"
 
+#include "dlg_info.h"
+
 // reqired to probe a fileand determine file info
 #include "parsers\file_parser.h"
 #include "parsers\ac3\ac3_parser.h"
@@ -177,10 +179,8 @@ void getfileinfo(char *filename, char *title, int *length_in_ms)
 
 int infodlg(char *filename, HWND hwndParent)
 {
-/*
   InfoDlg dlg(hinstance, hwndParent, filename); 
   dlg.run();
-*/
   return 0;
 }
 
