@@ -33,6 +33,8 @@ WinampSink::~WinampSink()
 bool
 WinampSink::open(Speakers _spk)
 {
+  AutoLock autolock(&lock);
+
   close();
 
   if (!in->outMod)
@@ -66,6 +68,8 @@ WinampSink::open(Speakers _spk)
 void
 WinampSink::close()
 {
+  AutoLock autolock(&lock);
+
   if (out)
     out->Close();
 
@@ -79,6 +83,58 @@ WinampSink::close()
 ///////////////////////////////////////////////////////////////////////////////
 // PlaybackControl interface
 
+void
+WinampSink::pause()
+{ 
+  AutoLock autolock(&lock);
+  if (out && !paused) 
+    paused = !out->Pause(1); 
+}
+
+void
+WinampSink::unpause()
+{ 
+  AutoLock autolock(&lock);
+  if (out && !paused) 
+    paused = !out->Pause(0);
+}
+
+bool
+WinampSink::is_paused() const 
+{ 
+  return paused; 
+}
+
+void
+WinampSink::stop()
+{ 
+  close(); 
+}
+
+void
+WinampSink::flush()
+{
+  // We have to lock following section because we use output module
+  // But we have to unlock before Sleep because we do not want to 
+  // hang during flushing.
+
+  lock.lock();
+  int writed_ms = out->GetWrittenTime() - out->GetOutputTime();
+  lock.unlock();
+
+  // Wait until playback finished and close output.
+  Sleep(writed_ms);
+  close(); 
+}
+
+vtime_t
+WinampSink::get_playback_time() const
+{
+  AutoLock autolock(&lock);
+  return out? time - (out->GetWrittenTime() - out->GetOutputTime()) / 1000: 0; 
+}
+
+
 double
 WinampSink::get_vol() const
 {
@@ -88,6 +144,8 @@ WinampSink::get_vol() const
 void
 WinampSink::set_vol(double _vol)
 {
+  AutoLock autolock(&lock);
+
   vol = _vol;
   if (vol < -100) vol = -100;
   if (vol > 0) vol = 0;
@@ -105,6 +163,8 @@ WinampSink::get_pan() const
 void
 WinampSink::set_pan(double _pan)
 {
+  AutoLock autolock(&lock);
+
   pan = _pan;
   if (pan > 100) pan = 100;
   if (pan < -100) pan = -100;
@@ -184,6 +244,9 @@ WinampSink::process(const Chunk *_chunk)
     time += size * size2time;
     c.drop(size);
   }
+
+  if (_chunk->eos)
+    flush();
 
   return true;
 }
