@@ -44,7 +44,7 @@ void eq_set(int on, char data[10], int preamp);
 In_Module mod = 
 {
   0x100,
-  "Valex's AC3 winampac3 for Winamp v0.60b",
+  "WinampAC3 decoder (AC3/DTS)",
   0,      // hMainWindow
   0,      // hDllInstance
   "AC3\0AC3 Audio File (*.AC3)\0DTS\0DTS Audio File (*.DTS)\0",
@@ -70,12 +70,9 @@ In_Module mod =
   setvolume,
   setpan,
     
-  0,0,0,0,0,0,0,0,0, // vis stuff
-    
-    
+  0,0,0,0,0,0,0,0,0, // vis stuff  
   0,0, // dsp
-    
-  eq_set,
+  0,   // equalizer
     
   NULL,           // setinfo
     
@@ -203,9 +200,6 @@ void setoutputtime(int seek_pos) { winampac3->seek(seek_pos);   }
 
 void setvolume(int volume) { winampac3->set_volume(volume);     }
 void setpan(int pan)       { winampac3->set_pan(pan);           }
-
-void eq_set(int on, char data[10], int preamp) {}
-
 
 
 
