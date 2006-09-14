@@ -47,7 +47,7 @@ protected:
 
   int         seek_pos;
 
-  enum { state_start, state_stop, state_process }
+  enum { state_start, state_stop, state_process, state_flush }
               state;
 
 public:

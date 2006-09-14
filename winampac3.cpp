@@ -9,8 +9,8 @@ wa_sink(_mod), ds_sink(0)
   isink    = 0;
   reinit   = 0;
 
-  sink     = &ds_sink;
-  ctrl     = &ds_sink;
+  sink     = &wa_sink;
+  ctrl     = &wa_sink;
 
   seek_pos = -1;
   state    = state_stop;
@@ -243,7 +243,11 @@ WinampAC3::process()
         // fill decoder
 
         if (file.eof())
-          state = state_stop;
+        {
+          chunk.set_empty(file.get_spk(), false, 0, true);
+          dec.process(&chunk);
+          state = state_flush;
+        }
         else
         {
           if (file.load_frame())
@@ -263,6 +267,19 @@ WinampAC3::process()
         dec.get_chunk(&chunk);
         sink->process(&chunk);
       }
+      break;
+
+    case state_flush:
+      if (dec.is_empty())
+      {
+        state = state_stop;
+      }
+      else
+      {
+        dec.get_chunk(&chunk);
+        sink->process(&chunk);
+      }
+      break;
     }
   }
   cpu.stop();
