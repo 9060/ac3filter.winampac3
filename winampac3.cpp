@@ -312,10 +312,18 @@ WinampAC3::process()
 
 // Setup sink used for output (SINK_XXXX constants)
 
-STDMETHODIMP WinampAC3::get_sink(int *_sink)
+STDMETHODIMP WinampAC3::get_sink(int *_sink, int *_current_sink)
 {
   if (_sink)
     *_sink = isink;
+  
+  if (_current_sink)
+  {
+    *_current_sink = -1;
+    if (sink == &wa_sink) *_current_sink = SINK_WINAMP;
+    if (sink == &ds_sink) *_current_sink = SINK_DSOUND;
+  }
+
   return S_OK;
 }
 

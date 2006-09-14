@@ -84,7 +84,7 @@ public:
   // Called from config dialog (control thread)
 
   // Setup sink used for output (SINK_XXXX constants)
-  STDMETHODIMP get_sink(int *sink);
+  STDMETHODIMP get_sink(int *sink, int *current_sink);
   STDMETHODIMP set_sink(int  sink);
 
   // Reinit sound card after pause option

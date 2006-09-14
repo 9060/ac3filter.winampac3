@@ -77,7 +77,7 @@ public:
   // Called from config dialog (control thread)
 
   // Setup sink used for output (SINK_XXXX constants)
-  STDMETHOD (get_sink)(int *sink) = 0;
+  STDMETHOD (get_sink)(int *sink, int *current_sink = 0) = 0;
   STDMETHOD (set_sink)(int  sink) = 0;
 
   // Reinit sound card after pause option
