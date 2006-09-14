@@ -17,8 +17,8 @@ protected:
   vtime_t  time;
 
   bool paused;
-  int  vol;
-  int  pan;
+  double vol;
+  double pan;
 
 public:
   WinampSink(In_Module *in);
@@ -43,13 +43,13 @@ public:
   virtual vtime_t get_buffer_time()   const;
   virtual size_t  get_data_size()     const;
   virtual vtime_t get_data_time()     const;
-
-  virtual double get_vol()            const { return vol; }
-  virtual void   set_vol(double _vol)       { vol = _vol; if (out) out->SetVolume(); }
-
-  virtual double get_pan()            const { return pan; }
-  virtual void   set_pan(double _pan);      { pan = _pan; if (out) out->SetPan(); }
 */
+  virtual double get_vol() const;
+  virtual void   set_vol(double _vol);
+
+  virtual double get_pan() const;
+  virtual void   set_pan(double _pan);
+
   /////////////////////////////////////////////////////////
   // Sink interface
 

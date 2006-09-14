@@ -63,7 +63,8 @@ WinampSink::open(Speakers _spk)
   return true;
 }
 
-void WinampSink::close()
+void
+WinampSink::close()
 {
   if (out)
     out->Close();
@@ -75,6 +76,47 @@ void WinampSink::close()
   paused = false;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// PlaybackControl interface
+
+double
+WinampSink::get_vol() const
+{
+  return vol;
+}
+
+void
+WinampSink::set_vol(double _vol)
+{
+  vol = _vol;
+  if (vol < -100) vol = -100;
+  if (vol > 0) vol = 0;
+
+  if (out)
+    out->SetVolume((LONG)((vol+100) / 100 * 255));
+}
+
+double
+WinampSink::get_pan() const
+{
+  return pan;
+}
+
+void
+WinampSink::set_pan(double _pan)
+{
+  pan = _pan;
+  if (pan > 100) pan = 100;
+  if (pan < -100) pan = -100;
+
+  if (out)
+    out->SetPan((LONG)(pan / 100 * 128));
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Sink interface
 
 bool
 WinampSink::query_input(Speakers _spk) const
