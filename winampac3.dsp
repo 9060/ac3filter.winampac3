@@ -163,6 +163,14 @@ SOURCE=.\winamp.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\winamp_sink.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\winamp_sink.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\winampac3.bmp
 # End Source File
 # Begin Source File

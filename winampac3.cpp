@@ -2,7 +2,7 @@
 
 
 WinampAC3::WinampAC3(In_Module *_mod):
-dsound(0)
+dsound(_mod)
 {
   mod      = _mod;
 

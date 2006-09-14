@@ -12,6 +12,7 @@
 
 #include "com_dec.h"
 #include "sink\sink_dsound.h"
+#include "winamp_sink.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -33,7 +34,7 @@ protected:
   COMDecoder  dec;
 
   Sink       *sink;
-  DSoundSink  dsound;
+  WinampSink  dsound;
 
   HANDLE      ev_play;
   HANDLE      ev_stop;
