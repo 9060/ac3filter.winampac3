@@ -2,18 +2,25 @@
 
 
 WinampAC3::WinampAC3(In_Module *_mod):
-dsound(_mod)
+wa_sink(_mod), ds_sink(0)
 {
   mod      = _mod;
 
-  parser   = 0;
-  sink     = &dsound;
+  isink    = 0;
+  reinit   = 0;
+
+  sink     = &ds_sink;
+  ctrl     = &ds_sink;
 
   seek_pos = -1;
   state    = state_stop;
 
   ev_play  = CreateEvent(0, true, false, 0);
   ev_stop  = CreateEvent(0, true, true,  0);
+
+  RegistryKey reg(REG_KEY);
+  reg.get_int32("sink", isink);
+  reg.get_int32("reinit", reinit);
 
   create(false);
 }
@@ -49,14 +56,12 @@ WinampAC3::play(const char *_filename)
 
   // open file
   if (file.open(&ac3_parser, _filename) && file.probe())
-    parser = &ac3_parser;
+  {}
   else if (file.open(&dts_parser, _filename) && file.probe())
-    parser = &dts_parser;
+  {}
   else
-  {
-    parser = 0;
     return false;
-  }
+
   file.stats();
 
   // determine output format
@@ -84,9 +89,14 @@ WinampAC3::play(const char *_filename)
     out_spk.sample_rate = user_spk.sample_rate;
 
   // setup
-  dec.set_input(file.get_spk());
-  dsound.set_input(out_spk);
-  dec.set_sink(&dsound);
+
+  if (!sink->set_input(out_spk))
+    if (!sink->set_input(Speakers(FORMAT_PCM16, MODE_STEREO, out_spk.sample_rate)))
+      return false;
+
+  dec.set_sink(sink);
+  if (!dec.set_input(file.get_spk()))
+    return false;
 
   // run!
   state = state_start;
@@ -101,11 +111,10 @@ WinampAC3::stop()
   ResetEvent(ev_play);
   WaitForSingleObject(ev_stop, 2000);
 
-  pos      = 0;
   seek_pos = -1;
   state = state_stop;
   
-  dsound.stop();
+  ctrl->stop();
   file.close();
   dec.reset();
 
@@ -121,19 +130,19 @@ WinampAC3::get_filename()
 void
 WinampAC3::pause()
 {
-  dsound.pause();
+  ctrl->stop();
 }
 
 void
 WinampAC3::unpause()
 {
-  dsound.unpause();
+  ctrl->unpause();
 }
 
 bool
 WinampAC3::is_paused()
 {
-  return dsound.is_paused();
+  return ctrl->is_paused();
 }
 
 // Positioning
@@ -153,7 +162,7 @@ WinampAC3::get_length()
 int
 WinampAC3::get_pos()
 {
-  return (int)(dsound.get_playback_time() * 1000);
+  return (int)(ctrl->get_playback_time() * 1000);
 }
 
 // Playback options
@@ -166,7 +175,7 @@ WinampAC3::set_volume(int volume)
   // 0 -> -100dB
   // 255 -> 0dB
 
-  dsound.set_vol(double(volume) / 255 * 100 - 100);
+  ctrl->set_vol(double(volume) / 255 * 100 - 100);
 }
 
 void
@@ -177,7 +186,7 @@ WinampAC3::set_pan(int pan)
   // -128 -> -100dB
   // +128 -> +100dB
 
-  dsound.set_pan(double(pan) / 128 * 100);
+  ctrl->set_pan(double(pan) / 128 * 100);
 }
 
 
@@ -185,6 +194,8 @@ WinampAC3::set_pan(int pan)
 DWORD 
 WinampAC3::process()
 {
+  Chunk chunk;
+
   cpu.start();
   while (1)
   {
@@ -205,12 +216,10 @@ WinampAC3::process()
     // seeking
     if (seek_pos != -1)
     {
-      pos      = seek_pos;
-      seek_pos = -1;
-
-      dsound.stop();
-      file.seek(int(pos), FileParser::ms);
+      ctrl->stop();
+      file.seek(int(seek_pos), FileParser::ms);
       state = state_start;
+      seek_pos = -1;
     }
 
     switch (state)
@@ -239,7 +248,7 @@ WinampAC3::process()
         {
           if (file.load_frame())
           {
-            Chunk chunk(file.get_spk(), file.get_frame(), file.get_frame_size());
+            chunk.set_rawdata(file.get_spk(), file.get_frame(), file.get_frame_size());
             chunk.set_sync(true, (vtime_t)file.get_pos(FileParser::ms)/1000);
             dec.process(&chunk);
           }
@@ -251,7 +260,6 @@ WinampAC3::process()
         // decoder is full
         // do output
 
-        Chunk chunk;
         dec.get_chunk(&chunk);
         sink->process(&chunk);
       }
@@ -265,10 +273,53 @@ WinampAC3::process()
 /////////////////////////////////////////////////////////
 // User interface (used in config dialog)
 
+// Setup sink used for output (SINK_XXXX constants)
+
+STDMETHODIMP WinampAC3::get_sink(int *_sink)
+{
+  if (_sink)
+    *_sink = isink;
+  return S_OK;
+}
+
+STDMETHODIMP WinampAC3::set_sink(int  _sink)
+{
+  switch (_sink)
+  {
+    case 0: break;
+    case 1: break;
+    default: return E_FAIL;
+  }
+
+  isink = _sink;
+  RegistryKey reg;
+  reg.set_int32("sink", isink);
+  return S_OK;
+}
+
+// Reinit sound card after pause option
+
+STDMETHODIMP WinampAC3::get_reinit(int *_reinit)
+{
+  if (_reinit)
+    *_reinit = reinit;
+  return S_OK;
+}
+
+STDMETHODIMP WinampAC3::set_reinit(int  _reinit)
+{
+  reinit = _reinit;
+  RegistryKey reg;
+  reg.set_int32("reinit", reinit);
+  return S_OK;
+}
+
+// Various info
+
 STDMETHODIMP 
 WinampAC3::get_playback_time(vtime_t *_time)
 {
-  *_time = dsound.get_playback_time();
+  *_time = ctrl->get_playback_time();
   return S_OK;
 }
 

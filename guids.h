@@ -8,8 +8,6 @@
 // Output sink
 #define SINK_WINAMP   0
 #define SINK_DSOUND   1
-#define SINK_DSOUND3D 2
-#define SINK_FILE     3
 
 // SPDIF mode
 #define SPDIF_MODE_NONE                0  // see dvd_graph.h
@@ -58,6 +56,7 @@ class IWinampAC3
 public:
   /////////////////////////////////////////////////////////
   // Winamp control interface
+  // Called by winamp (control thread)
 
   // Playback control
   virtual bool play(const char *filename) = 0;
@@ -74,17 +73,28 @@ public:
   virtual int   get_pos() = 0;
 
   /////////////////////////////////////////////////////////
-  // Other interfaces
+  // User interface
+  // Called from config dialog (control thread)
 
-  virtual IDecoder        *get_decoder() = 0;
-  virtual IAudioProcessor *get_audio_processor() = 0;
+  // Setup sink used for output (SINK_XXXX constants)
+  STDMETHOD (get_sink)(int *sink) = 0;
+  STDMETHOD (set_sink)(int  sink) = 0;
 
-  /////////////////////////////////////////////////////////
-  // User interface (used in config dialog)
+  // Reinit sound card after pause option
+  STDMETHOD (get_reinit)(int *reinit) = 0;
+  STDMETHOD (set_reinit)(int  reinit) = 0;
 
+  // Various info
   STDMETHOD (get_playback_time)(vtime_t *time) = 0;
   STDMETHOD (get_cpu_usage)(double *cpu_usage) = 0;
   STDMETHOD (get_env)(char *buf, int size) = 0;
+
+  /////////////////////////////////////////////////////////
+  // Other interfaces
+  // This interfaces are used in config dialog (control thread)
+
+  virtual IDecoder        *get_decoder() = 0;
+  virtual IAudioProcessor *get_audio_processor() = 0;
 };
 
 

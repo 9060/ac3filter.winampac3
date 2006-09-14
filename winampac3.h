@@ -26,21 +26,26 @@ protected:
   In_Module  *mod;
   CPUMeter    cpu;
 
+  int isink;
+  int reinit;
+
   // Decoding process objects
   FileParser  file;
-  Parser     *parser;
   AC3Parser   ac3_parser;
   DTSParser   dts_parser;
+
   COMDecoder  dec;
 
-  Sink       *sink;
-  WinampSink  dsound;
+  WinampSink  wa_sink;
+  DSoundSink  ds_sink;
+
+  Sink            *sink;
+  PlaybackControl *ctrl;
 
   HANDLE      ev_play;
   HANDLE      ev_stop;
 
   int         seek_pos;
-  double      pos;
 
   enum { state_start, state_stop, state_process }
               state;
@@ -53,6 +58,7 @@ public:
 
   /////////////////////////////////////////////////////////
   // Winamp control interface
+  // Called by winamp (control thread)
 
   // Playback control
   virtual bool play(const char *filename);
@@ -73,17 +79,27 @@ public:
   virtual void  set_pan(int pan);
 
   /////////////////////////////////////////////////////////
-  // Other interfaces
+  // User interface
+  // Called from config dialog (control thread)
 
-  virtual IDecoder        *get_decoder();
-  virtual IAudioProcessor *get_audio_processor();
+  // Setup sink used for output (SINK_XXXX constants)
+  STDMETHODIMP get_sink(int *sink);
+  STDMETHODIMP set_sink(int  sink);
 
-  /////////////////////////////////////////////////////////
-  // User interface (used in config dialog)
+  // Reinit sound card after pause option
+  STDMETHODIMP get_reinit(int *reinit);
+  STDMETHODIMP set_reinit(int  reinit);
 
   STDMETHODIMP get_playback_time(vtime_t *time);
   STDMETHODIMP get_cpu_usage(double *cpu_usage);
   STDMETHODIMP get_env(char *buf, int size);
+
+  /////////////////////////////////////////////////////////
+  // Other interfaces
+  // This interfaces are used in config dialog (control thread)
+
+  virtual IDecoder        *get_decoder();
+  virtual IAudioProcessor *get_audio_processor();
 };
 
 
