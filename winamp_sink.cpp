@@ -220,12 +220,16 @@ WinampSink::process(const Chunk *_chunk)
     time = _chunk->time;
 
   Chunk c = *_chunk;
+  size_t size = 0;
   while (c.size)
   {
-    while (out->CanWrite() < 65536)
+    size = out->CanWrite();
+    while (size < 65536 && size < c.size)
+    {
       Sleep(100);
+      size = out->CanWrite();
+    }
 
-    int size = out->CanWrite();
     if (size > c.size)
       size = c.size;
     
