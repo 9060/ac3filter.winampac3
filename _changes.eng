@@ -11,11 +11,8 @@
   +   Sample rate check
   + Option to check output format support
   + Sound card reinit after pause
-  * Time shift and jitter correction work with SPDIF output
-
   + As-is output mode (without change of number of channgels)
   * Level meters are now syncronized with playback
-  + More powerful dynamic range compression
   + Attack/Release speed adjust
   + Bass redirection
   + Per-channel gain control
