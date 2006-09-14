@@ -1,3 +1,20 @@
+/*
+  Sink that uses winamp output plugin for audio playback.
+
+  Winamp fills 'outMod' field at input plugin structure only when input plugin
+  works. Therefore we must use it only when playback is started. When playback
+  is finished (after flush() or stop() call) we must release output and forget
+  about it. For next playback winamp may specify another output, therefore we
+  should not keep output plugin open or try to use for next playback without
+  complete reinit.
+
+  Therefore flush() and stop() functions actually close audio output and zero
+  'out' member. Because of this we must serialize all functions that use it.
+  Output plugin is used in both working thread (Sink interfacel) and control
+  thread (Playback control). To serialize all this function calls a critical
+  section 'lock' is used.
+*/
+
 #ifndef WINAMP_SINK_H
 #define WINAMP_SINK_H
 
@@ -69,6 +86,5 @@ public:
   virtual bool process(const Chunk *_chunk);
 
 };
-
 
 #endif
