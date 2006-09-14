@@ -1,16 +1,5 @@
 #include "winamp_sink.h"
 
-const int wa_order[5][6] = 
-{
-  { CH_M,   CH_NONE,  CH_NONE,  CH_NONE,  CH_NONE,  CH_NONE },  // mono
-  { CH_L,   CH_R,     CH_NONE,  CH_NONE,  CH_NONE,  CH_NONE },  // stereo
-  { CH_L,   CH_R,     CH_SL,    CH_SR,    CH_NONE,  CH_NONE },  // quadro
-  { CH_L,   CH_R,     CH_C,     CH_SL,    CH_SR,    CH_NONE },  // 5 channels
-  { CH_L,   CH_R,     CH_C,     CH_LFE,   CH_SL,    CH_SR   }   // 5.1 channels
-};
-
-
-
 WinampSink::WinampSink(In_Module *_in)
 {
   in = _in;
@@ -122,7 +111,7 @@ WinampSink::flush()
   int writed_ms = out->GetWrittenTime() - out->GetOutputTime();
   lock.unlock();
 
-  // Wait until playback finished and close output.
+  // Wait until playback finishes and close output.
   Sleep(writed_ms);
   close(); 
 }
