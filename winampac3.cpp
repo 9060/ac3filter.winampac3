@@ -54,7 +54,9 @@ WinampAC3::play(const char *_filename)
 {
   if (!stop()) return false;
 
-  // open file
+  /////////////////////////////////////////////////////////
+  // Open file
+
   if (file.open(&ac3_parser, _filename) && file.probe())
   {}
   else if (file.open(&dts_parser, _filename) && file.probe())
@@ -64,7 +66,9 @@ WinampAC3::play(const char *_filename)
 
   file.stats();
 
-  // determine output format
+  /////////////////////////////////////////////////////////
+  // Determine output format
+
   Speakers user_spk;
   Speakers out_spk;
 
@@ -88,7 +92,21 @@ WinampAC3::play(const char *_filename)
   if (user_spk.sample_rate)
     out_spk.sample_rate = user_spk.sample_rate;
 
-  // setup
+  /////////////////////////////////////////////////////////
+  // Setup
+
+  switch (isink)
+  {
+  case SINK_DSOUND:
+    sink     = &ds_sink;
+    ctrl     = &ds_sink;
+    break;
+
+  case SINK_WINAMP:
+    sink     = &wa_sink;
+    ctrl     = &wa_sink;
+    break;
+  }
 
   if (!sink->set_input(out_spk))
     if (!sink->set_input(Speakers(FORMAT_PCM16, MODE_STEREO, out_spk.sample_rate)))
@@ -98,7 +116,9 @@ WinampAC3::play(const char *_filename)
   if (!dec.set_input(file.get_spk()))
     return false;
 
-  // run!
+  /////////////////////////////////////////////////////////
+  // Run!
+
   state = state_start;
   SetEvent(ev_play);
   return true;
