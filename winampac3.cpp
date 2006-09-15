@@ -2,7 +2,7 @@
 
 
 WinampAC3::WinampAC3(In_Module *_mod):
-wa_sink(_mod), ds_sink(0)
+wa_sink(_mod)
 {
   mod      = _mod;
 
@@ -12,7 +12,7 @@ wa_sink(_mod), ds_sink(0)
   sink     = &wa_sink;
   ctrl     = &wa_sink;
 
-  seek_pos = -1;
+  base_pos = 0;
   state    = state_stop;
 
   ev_play  = CreateEvent(0, true, false, 0);
@@ -22,6 +22,7 @@ wa_sink(_mod), ds_sink(0)
   reg.get_int32("sink", isink);
   reg.get_int32("reinit", reinit);
 
+  ds_sink.open_dsound(0);
   create(false);
 }
 
@@ -128,14 +129,13 @@ bool
 WinampAC3::stop()
 {
   // Unblock processing and syncronize with working thread
-
   ResetEvent(ev_play);
   ctrl->stop();
   WaitForSingleObject(ev_stop, 2000);
 
   // Close everything
 
-  seek_pos = -1;
+  base_pos = 0;
   state = state_stop;
   
   file.close();
@@ -163,9 +163,19 @@ WinampAC3::unpause()
   if (reinit)
   {
     Speakers sink_spk = sink->get_input();
-    if (sink_spk.format == FORMAT_SPDIF)
+    bool use_spdif;
+    dec.get_use_spdif(&use_spdif);
+    if (use_spdif)
     {
-      // ...............................
+      // Unblock processing and syncronize with working thread
+      ResetEvent(ev_play);
+      ctrl->stop();
+      WaitForSingleObject(ev_stop, 2000);
+
+      // Close current SPDIF output and run
+      dec.reset();
+      ds_sink.close();
+      SetEvent(ev_play);
     }
   }
 
@@ -181,9 +191,32 @@ WinampAC3::is_paused()
 // Positioning
 
 void
-WinampAC3::seek(int _seek_pos)
+WinampAC3::seek(int _pos)
 {
-  seek_pos = _seek_pos;
+  // Unblock processing and syncronize with working thread
+  ResetEvent(ev_play);
+  ctrl->stop();
+  WaitForSingleObject(ev_stop, 2000);
+
+  // Reopen SPDIF output
+  if (reinit)
+  {
+    Speakers sink_spk = sink->get_input();
+    bool use_spdif;
+    dec.get_use_spdif(&use_spdif);
+    if (use_spdif)
+    {
+      // Close current SPDIF output
+      dec.reset();
+      ds_sink.close();
+    }
+  }
+
+  // Seek and run
+  base_pos = _pos;
+  file.seek(int(base_pos), FileParser::ms);
+  state = state_start;
+  SetEvent(ev_play);
 }
 
 int
@@ -195,7 +228,7 @@ WinampAC3::get_length()
 int
 WinampAC3::get_pos()
 {
-  return (int)(ctrl->get_playback_time() * 1000);
+  return base_pos + (int)(ctrl->get_playback_time() * 1000);
 }
 
 // Playback options
@@ -246,15 +279,6 @@ WinampAC3::process()
     ///////////////////////////////////////////////////////
     // Now we have all decoding objects live and initialized
 
-    // seeking
-    if (seek_pos != -1)
-    {
-      ctrl->stop();
-      file.seek(int(seek_pos), FileParser::ms);
-      state = state_start;
-      seek_pos = -1;
-    }
-
     switch (state)
     {
     case state_start:
@@ -286,7 +310,6 @@ WinampAC3::process()
           if (file.load_frame())
           {
             chunk.set_rawdata(file.get_spk(), file.get_frame(), file.get_frame_size());
-            chunk.set_sync(true, (vtime_t)file.get_pos(FileParser::ms)/1000);
             dec.process(&chunk);
           }
         }

@@ -46,7 +46,7 @@ protected:
   HANDLE      ev_play;
   HANDLE      ev_stop;
 
-  int         seek_pos;
+  int         base_pos;
 
   enum { state_start, state_stop, state_process, state_flush }
               state;
@@ -71,7 +71,7 @@ public:
   virtual bool is_paused();
 
   // Positioning
-  virtual void  seek(int seek_pos);
+  virtual void  seek(int pos);
   virtual int   get_length();
   virtual int   get_pos();
 
