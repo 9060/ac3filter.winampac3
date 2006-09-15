@@ -127,16 +127,20 @@ WinampAC3::play(const char *_filename)
 bool 
 WinampAC3::stop()
 {
-  // syncronisation
+  // Unblock processing and syncronize with working thread
+
   ResetEvent(ev_play);
+  ctrl->stop();
   WaitForSingleObject(ev_stop, 2000);
+
+  // Close everything
 
   seek_pos = -1;
   state = state_stop;
   
-  ctrl->stop();
   file.close();
-  dec.reset();
+  wa_sink.close();
+  ds_sink.close();
 
   return true;
 }
@@ -150,12 +154,21 @@ WinampAC3::get_filename()
 void
 WinampAC3::pause()
 {
-  ctrl->stop();
+  ctrl->pause();
 }
 
 void
 WinampAC3::unpause()
 {
+  if (reinit)
+  {
+    Speakers sink_spk = sink->get_input();
+    if (sink_spk.format == FORMAT_SPDIF)
+    {
+      // ...............................
+    }
+  }
+
   ctrl->unpause();
 }
 

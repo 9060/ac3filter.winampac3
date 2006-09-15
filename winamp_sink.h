@@ -3,16 +3,22 @@
 
   Winamp fills 'outMod' field at input plugin structure only when input plugin
   works. Therefore we must use it only when playback is started. When playback
-  is finished (after flush() or stop() call) we must release output and forget
-  about it. For next playback winamp may specify another output, therefore we
-  should not keep output plugin open or try to use for next playback without
-  complete reinit.
+  is finished (close() call) we must release output and forget about it.
+  For next playback winamp may specify another output, therefore we should not
+  keep output plugin open or try to use for next playback without reinit.
 
-  Therefore flush() and stop() functions actually close audio output and zero
-  'out' member. Because of this we must serialize all functions that use it.
   Output plugin is used in both working thread (Sink interfacel) and control
   thread (Playback control). To serialize all this function calls a critical
-  section 'lock' is used.
+  section 'output_lock' is used.
+
+  Blocking functions (process() and flush()) cannot take output lock for a long
+  time because it may block control thread and lead to deadlock. Therefore to
+  serialize playback functions 'playback_lock' is used.
+
+  stop() must force blocking functions to finish before actually close audio
+  output. To signal these functions to unblock 'ev_stop' is used. Blocking
+  functions must wait on this event and stop execution immediately when
+  signaled.
 */
 
 #ifndef WINAMP_SINK_H
@@ -38,7 +44,9 @@ protected:
   double vol;
   double pan;
 
-  mutable CritSec lock;
+  mutable CritSec output_lock;
+  mutable CritSec playback_lock;
+  HANDLE  ev_stop;
 
 public:
   WinampSink(In_Module *in);
@@ -55,6 +63,8 @@ public:
   /////////////////////////////////////////////////////////
   // Playback control
   // This functions are called from control thread
+  // flush() and stop() may be called from working thread
+  // (from set_input() and process() calls)
 
   virtual void pause();
   virtual void unpause();
@@ -78,7 +88,7 @@ public:
 
   /////////////////////////////////////////////////////////
   // Sink interface
-  // This functions are called from working thread
+  // This functions are called only from working thread
 
   virtual bool query_input(Speakers _spk) const;
   virtual bool set_input(Speakers _spk);

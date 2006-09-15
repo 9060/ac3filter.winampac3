@@ -12,17 +12,20 @@ WinampSink::WinampSink(In_Module *_in)
   paused = false;
   vol = 0;
   pan = 0;
+
+  ev_stop = CreateEvent(0, false, true, 0);
 }
 
 WinampSink::~WinampSink()
 {
   close();
+  CloseHandle(ev_stop);
 }
 
 bool
 WinampSink::open(Speakers _spk)
 {
-  AutoLock autolock(&lock);
+  AutoLock autolock(&output_lock);
 
   close();
 
@@ -57,7 +60,18 @@ WinampSink::open(Speakers _spk)
 void
 WinampSink::close()
 {
-  AutoLock autolock(&lock);
+  AutoLock output(&output_lock);
+
+  /////////////////////////////////////////////////////////
+  // Unblock playback and take playback lock. It is safe
+  // because ev_stop remains signaled (manual-reset event)
+  // and playback functions cannot block anymore.
+
+  SetEvent(ev_stop);
+  AutoLock playback(&playback_lock);
+
+  /////////////////////////////////////////////////////////
+  // Close everything
 
   if (out)
     out->Close();
@@ -67,6 +81,11 @@ WinampSink::close()
   size2time = 0;
   time = 0;
   paused = false;
+
+  /////////////////////////////////////////////////////////
+  // Reset ev_stop
+
+  ResetEvent(ev_stop);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,17 +94,17 @@ WinampSink::close()
 void
 WinampSink::pause()
 { 
-  AutoLock autolock(&lock);
-  if (out && !paused) 
-    paused = !out->Pause(1); 
+  AutoLock autolock(&output_lock);
+  out->Pause(1); 
+  paused = true;
 }
 
 void
 WinampSink::unpause()
 { 
-  AutoLock autolock(&lock);
-  if (out && !paused) 
-    paused = !out->Pause(0);
+  AutoLock autolock(&output_lock);
+  out->Pause(0); 
+  paused = false;
 }
 
 bool
@@ -96,30 +115,47 @@ WinampSink::is_paused() const
 
 void
 WinampSink::stop()
-{ 
-  close(); 
+{
+  AutoLock output(&output_lock);
+
+  /////////////////////////////////////////////////////////
+  // Unblock playback and take playback lock. It is safe
+  // because ev_stop remains signaled (manual-reset event)
+  // and playback functions cannot block anymore.
+
+  SetEvent(ev_stop);
+  AutoLock playback(&playback_lock);
+
+  if (out)
+    out->Flush(0);
+
+  ResetEvent(ev_stop);
 }
 
 void
 WinampSink::flush()
 {
-  // We have to lock following section because we use output module
-  // But we have to unlock before Sleep because we do not want to 
-  // hang during flushing.
+  // We may not take output lock here because close() tries
+  // to take playback lock before closing audio output.
 
-  lock.lock();
+  AutoLock autolock(&playback_lock);
+
+  if (!out) return;
   int writed_ms = out->GetWrittenTime() - out->GetOutputTime();
-  lock.unlock();
 
-  // Wait until playback finishes and close output.
-  Sleep(writed_ms);
-  close(); 
+  // Wait until playback finishes and stop.
+  // Note that we must finish immediately on ev_stop
+
+  if (WaitForSingleObject(ev_stop, writed_ms) == WAIT_OBJECT_0)
+    return;
+
+  stop(); 
 }
 
 vtime_t
 WinampSink::get_playback_time() const
 {
-  AutoLock autolock(&lock);
+  AutoLock autolock(&output_lock);
   return out? time - (out->GetWrittenTime() - out->GetOutputTime()) / 1000: 0; 
 }
 
@@ -133,7 +169,7 @@ WinampSink::get_vol() const
 void
 WinampSink::set_vol(double _vol)
 {
-  AutoLock autolock(&lock);
+  AutoLock autolock(&output_lock);
 
   vol = _vol;
   if (vol < -100) vol = -100;
@@ -152,7 +188,7 @@ WinampSink::get_pan() const
 void
 WinampSink::set_pan(double _pan)
 {
-  AutoLock autolock(&lock);
+  AutoLock autolock(&output_lock);
 
   pan = _pan;
   if (pan > 100) pan = 100;
@@ -209,8 +245,17 @@ WinampSink::get_input() const
 bool
 WinampSink::process(const Chunk *_chunk)
 {
+  // We may not take output lock here because close() tries
+  // to take playback lock before closing audio output.
+
+  AutoLock autolock(&playback_lock);
+
   if (_chunk->is_dummy())
     return true;
+
+  // process() automatically opens audio output if it is
+  // not open. It is because input format in uninitialized
+  // state = spk_unknown. It is exactly what we want.
 
   if (_chunk->spk != spk)
     if (!set_input(_chunk->spk))
@@ -226,13 +271,18 @@ WinampSink::process(const Chunk *_chunk)
     size = out->CanWrite();
     while (size < 65536 && size < c.size)
     {
-      Sleep(100);
+      // Wait buffer to free
+      // Note that we must finish immediately on ev_stop
+
+      if (WaitForSingleObject(ev_stop, 100) == WAIT_OBJECT_0)
+        return true;
+
       size = out->CanWrite();
     }
 
     if (size > c.size)
       size = c.size;
-    
+
     out->Write((char *)c.rawdata, size);
     time += size * size2time;
     c.drop(size);
