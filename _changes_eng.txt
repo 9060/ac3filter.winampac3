@@ -1,5 +1,5 @@
-<b>1.01a</b> - 
-  * Uses new valib (AC3Filter 1.09) and supports all its new features!
+<b>1.01a</b> - 15.09.06
+  * Uses new valib (AC3Filter 1.09) and supports all new features!
   + DTS decoding support (including AVI/DTS and WAV/DTS)
   + AC3/DTS SPDIF passthrough
   + Real-time AC3 encoding for multichannel SPDIF output
