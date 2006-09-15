@@ -126,6 +126,7 @@ WinampSink::stop()
   SetEvent(ev_stop);
   AutoLock playback(&playback_lock);
 
+  time = 0;
   if (out)
     out->Flush(0);
 
