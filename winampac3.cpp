@@ -337,7 +337,7 @@ STDMETHODIMP WinampAC3::set_sink(int  _sink)
   }
 
   isink = _sink;
-  RegistryKey reg;
+  RegistryKey reg(REG_KEY);
   reg.set_int32("sink", isink);
   return S_OK;
 }
@@ -354,7 +354,7 @@ STDMETHODIMP WinampAC3::get_reinit(int *_reinit)
 STDMETHODIMP WinampAC3::set_reinit(int  _reinit)
 {
   reinit = _reinit;
-  RegistryKey reg;
+  RegistryKey reg(REG_KEY);
   reg.set_int32("reinit", reinit);
   return S_OK;
 }
