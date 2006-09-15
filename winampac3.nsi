@@ -2,24 +2,28 @@
 ; WinampAC3 installation script
 ;
 
-
 OutFile "${SETUP_FILE}"
 Name "WinampAC3"
-;Icon "ac3filter.ico"
 CRCCheck on
+
+;Icon "ac3filter.ico"
+;UninstallIcon "ac3filter.ico"
 
 InstallDir $PROGRAMFILES\Winamp
 InstallDirRegKey HKLM \
                  "Software\Microsoft\Windows\CurrentVersion\Uninstall\Winamp" \
                  "UninstallString"
 
-DirText "Please select your Winamp path below (you will be able to proceed when Winamp is detected):"
-DirShow show
-
 InstallColors {000000 C0C0C0}
 InstProgressFlags "smooth"
-AutoCloseWindow true
-ShowInstDetails nevershow
+ShowInstDetails "show"
+
+
+Page directory
+Page instfiles
+UninstPage uninstConfirm
+UninstPage instfiles
+
 
 Function .onVerifyInstDir
   IfFileExists $INSTDIR\Winamp.exe Good
@@ -28,10 +32,19 @@ Function .onVerifyInstDir
 FunctionEnd
 
 
-Section "Install"
+Section "WinampAC3"
   SetOutPath $INSTDIR\plugins
 
   ;; Copy Files
-  File "${SOURCE_DIR}\in_vac3.dll"
+  File "${SOURCE_DIR}\in_winampac3.dll"
 
+  ;; Install presets
+  ExecWait 'regedit /s "${SOURCE_DIR}\winampac3_presets.reg"'
+
+SectionEnd
+
+Section "Uninstall"
+  DeleteRegKey   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WinampAC3"
+  DeleteRegKey   HKCU "Software\WinampAC3"
+  Delete "$INSTDIR\plugins\in_winampac3.dll"
 SectionEnd
