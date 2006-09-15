@@ -1,4 +1,7 @@
 /*
+  WinampSink
+  ==========
+
   Sink that uses winamp output plugin for audio playback.
 
   Winamp fills 'outMod' field at input plugin structure only when input plugin
@@ -15,10 +18,9 @@
   time because it may block control thread and lead to deadlock. Therefore to
   serialize playback functions 'playback_lock' is used.
 
-  stop() must force blocking functions to finish before actually close audio
-  output. To signal these functions to unblock 'ev_stop' is used. Blocking
-  functions must wait on this event and stop execution immediately when
-  signaled.
+  stop() must force blocking functions to finish. To signal these functions to
+  unblock 'ev_stop' is used. Blocking functions must wait on this event and
+  stop execution immediately when signaled.
 */
 
 #ifndef WINAMP_SINK_H

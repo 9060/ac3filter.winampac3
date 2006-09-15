@@ -13,7 +13,7 @@ WinampSink::WinampSink(In_Module *_in)
   vol = 0;
   pan = 0;
 
-  ev_stop = CreateEvent(0, false, true, 0);
+  ev_stop = CreateEvent(0, true, false, 0);
 }
 
 WinampSink::~WinampSink()
