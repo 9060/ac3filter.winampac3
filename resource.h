@@ -6,6 +6,10 @@
 #define IDD_TABDLG                      105
 #define IDC_EDT_FILEINFO                1000
 #define IDC_EDT_FILENAME                1001
+#define IDC_RB_SINK_WINAMP              1002
+#define IDC_RB_SINK_DSOUND              1003
+#define IDC_RB_SINK_WAV                 1004
+#define IDC_EDT_SINK_WAV                1005
 
 // Next default values for new objects
 // 
@@ -13,7 +17,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

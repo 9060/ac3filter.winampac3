@@ -31,8 +31,11 @@ private:
   Speakers in_spk;
   Speakers out_spk;
   Speakers user_spk;
+
   int      formats;
   bool     query_sink;
+  int      reinit;
+  int      sink;
 
   // spdif
   bool     use_spdif;

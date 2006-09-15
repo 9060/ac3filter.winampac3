@@ -419,6 +419,9 @@ ConfigDlg::reload_state()
 
   dec->get_frames(&frames, &errors);
 
+  winampac3->get_reinit(&reinit);
+  winampac3->get_sink(&sink);
+
   vtime_t time;
   winampac3->get_playback_time(&time);
   proc->get_state(this, time);
@@ -742,14 +745,13 @@ ConfigDlg::set_controls()
   // Query sink and force reinit
 
   CheckDlgButton(hwnd, IDC_CHK_QUERY_SINK, query_sink? BST_CHECKED: BST_UNCHECKED);
+  CheckDlgButton(hwnd, IDC_CHK_REINIT, reinit > 0? BST_CHECKED: BST_UNCHECKED);
 
-  {
-    RegistryKey reg(REG_KEY);
-    int reinit_samples = 0;
-    reg.get_int32("reinit_samples", reinit_samples);
-    CheckDlgButton(hwnd, IDC_CHK_REINIT, reinit_samples > 0? BST_CHECKED: BST_UNCHECKED);
-  }
+  /////////////////////////////////////
+  // Audio sink
 
+  CheckDlgButton(hwnd, IDC_RB_SINK_WINAMP, sink == SINK_WINAMP? BST_CHECKED: BST_UNCHECKED);
+  CheckDlgButton(hwnd, IDC_RB_SINK_DSOUND, sink == SINK_DSOUND? BST_CHECKED: BST_UNCHECKED);
 
   /////////////////////////////////////
   // Auto gain control
@@ -1076,9 +1078,8 @@ ConfigDlg::command(int control, int message)
 
     case IDC_CHK_REINIT:
     {
-      RegistryKey reg(REG_KEY);
-      int reinit_samples = IsDlgButtonChecked(hwnd, IDC_CHK_REINIT) == BST_CHECKED? 128: 0;
-      reg.set_int32("reinit_samples", reinit_samples);
+      reinit = IsDlgButtonChecked(hwnd, IDC_CHK_REINIT) == BST_CHECKED;
+      winampac3->set_reinit(reinit);
       update();
       break;
     }
@@ -1543,6 +1544,22 @@ ConfigDlg::command(int control, int message)
       }
       break;
     }
+
+    /////////////////////////////////////
+    // AudioSink
+
+    case IDC_RB_SINK_WINAMP:
+      sink = SINK_WINAMP;
+      winampac3->set_sink(sink);
+      update();
+      break;
+
+    case IDC_RB_SINK_DSOUND:
+      sink = SINK_DSOUND;
+      winampac3->set_sink(sink);
+      update();
+      break;
+
   }
 }
 

@@ -274,6 +274,16 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,207,19,72,10
     RTEXT           "WinampAC3 ver. %s Copyright (c) 2002-2006 by Alexander Vigovsky",
                     IDC_VER,7,190,383,8
+    GROUPBOX        "Audio sink",IDC_STATIC,200,126,190,61
+    CONTROL         "Winamp output plugin",IDC_RB_SINK_WINAMP,"Button",
+                    BS_AUTORADIOBUTTON,207,137,85,10
+    CONTROL         "Direct Sound renderer (required for SPDIF support)",
+                    IDC_RB_SINK_DSOUND,"Button",BS_AUTORADIOBUTTON,207,147,
+                    175,10
+    CONTROL         "WAV file:",IDC_RB_SINK_WAV,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,207,157,45,10
+    EDITTEXT        IDC_EDT_SINK_WAV,207,168,175,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
 END
 
 IDD_MIXER DIALOGEX 0, 0, 397, 201
