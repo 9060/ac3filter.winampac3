@@ -1,6 +1,6 @@
 <b>1.01a</b> - 15.09.06
   * Uses new valib (AC3Filter 1.09) and supports all new features!
-  + DTS decoding support (including AVI/DTS and WAV/DTS)
+  + DTS decoding support
   + AC3/DTS SPDIF passthrough
   + Real-time AC3 encoding for multichannel SPDIF output
   + Extended decoder inforation
@@ -10,7 +10,7 @@
   +   Option to output SPDIF stream as PCM
   +   Sample rate check
   + Option to check output format support
-  + Sound card reinit after pause
+  + Sound card reinit after pause/seek
   + As-is output mode (without change of number of channgels)
   * Level meters are now syncronized with playback
   + Attack/Release speed adjust
