@@ -5,8 +5,11 @@
 #include "dlg_info.h"
 
 #include "parsers\file_parser.h"
-#include "parsers\ac3\ac3_parser.h"
-#include "parsers\dts\dts_parser.h"
+#include "parsers\ac3\ac3_header.h"
+#include "parsers\dts\dts_header.h"
+#include "parsers\mpa\mpa_header.h"
+#include "parsers\spdif_header.h"
+#include "parsers\multi_header.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,29 +84,30 @@ InfoDlg::message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 void 
 InfoDlg::init_controls()
 {
-  char buf[1024];
+  const size_t buf_size = 1024;
+  char buf[buf_size];
+
   FileParser file;
-  AC3Parser ac3;
-  DTSParser dts;
+  const HeaderParser *parser_list[] = { &spdif_header, &ac3_header, &dts_header, &mpa_header };
+  MultiHeader multi_parser(parser_list, array_size(parser_list));
 
-  SendDlgItemMessage(hwnd, IDC_EDT_FILENAME, WM_SETTEXT, 0, (LPARAM)filename);
-
-  if (file.open(&ac3, filename) && file.probe())
+  if (file.open(filename, &multi_parser, 1000000))
   {
-    file.stats();
-    file.get_info(buf, sizeof(buf));
-    cr2crlf(buf, sizeof(buf));
-    SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)buf);
-  }
-  else if (file.open(&dts, filename) && file.probe())
-  {
-    file.stats();
-    file.get_info(buf, sizeof(buf));
-    cr2crlf(buf, sizeof(buf));
-    SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)buf);
+    if (file.stats())
+    {
+      file.load_frame();
+      size_t used = file.file_info(buf, buf_size);
+      used += sprintf(buf + used, "\n");
+      used += file.stream_info(buf + used, buf_size - used);
+      cr2crlf(buf, buf_size);
+    }
+    else
+      sprintf(buf, "Error: Cannot detect file format\n");
   }
   else
-  {
-    SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)"Cannot determine file format");
-  }
+    sprintf(buf, "Error: Cannot open file '%s'\n", filename);
+    
+
+  SendDlgItemMessage(hwnd, IDC_EDT_FILENAME, WM_SETTEXT, 0, (LPARAM)filename);
+  SendDlgItemMessage(hwnd, IDC_EDT_FILEINFO, WM_SETTEXT, 0, (LPARAM)buf);
 }

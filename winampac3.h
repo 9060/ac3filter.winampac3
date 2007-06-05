@@ -14,8 +14,7 @@
 #include "win32\cpu.h"
 
 #include "parsers\file_parser.h"
-#include "parsers\ac3\ac3_parser.h"
-#include "parsers\dts\dts_parser.h"
+#include "parsers\multi_header.h"
 
 #include "com_dec.h"
 #include "sink\sink_dsound.h"
@@ -31,9 +30,8 @@ protected:
   int reinit;
 
   // Decoding process objects
+  MultiHeader header_parser;
   FileParser  file;
-  AC3Parser   ac3_parser;
-  DTSParser   dts_parser;
 
   COMDecoder  dec;
 

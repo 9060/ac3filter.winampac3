@@ -5,10 +5,13 @@
 #include "dlg_info.h"
 #include "dlg_conf.h"
 
-// reqired to probe a fileand determine file info
 #include "parsers\file_parser.h"
-#include "parsers\ac3\ac3_parser.h"
-#include "parsers\dts\dts_parser.h"
+#include "parsers\ac3\ac3_header.h"
+#include "parsers\dts\dts_header.h"
+#include "parsers\mpa\mpa_header.h"
+#include "parsers\spdif_header.h"
+#include "parsers\multi_header.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -157,19 +160,12 @@ void getfileinfo(char *filename, char *title, int *length_in_ms)
     {
       // probe the file
       FileParser file;
-      AC3Parser ac3;
-      DTSParser dts;
+      const HeaderParser *parser_list[] = { &spdif_header, &ac3_header, &dts_header, &mpa_header };
+      MultiHeader multi_parser(parser_list, array_size(parser_list));
 
-      if (file.open(&ac3, filename) && file.probe())
-      {
-        file.stats();
-        *length_in_ms = (int)file.get_size(FileParser::ms);
-      }
-      else if (file.open(&dts, filename) && file.probe())
-      {
-        file.stats();
-        *length_in_ms = (int)file.get_size(FileParser::ms);
-      }
+      if (file.open(filename, &multi_parser, 1000000))
+        if (file.stats())
+          *length_in_ms = (int)(file.get_size(FileParser::time) * 1000);
     }
   }
 }

@@ -1,5 +1,9 @@
 #include "winampac3.h"
-
+#include "parsers\ac3\ac3_header.h"
+#include "parsers\dts\dts_header.h"
+#include "parsers\mpa\mpa_header.h"
+#include "parsers\spdif_header.h"
+#include "parsers\multi_header.h"
 
 WinampAC3::WinampAC3(In_Module *_mod):
 wa_sink(_mod)
@@ -21,6 +25,9 @@ wa_sink(_mod)
   RegistryKey reg(REG_KEY);
   reg.get_int32("sink", isink);
   reg.get_int32("reinit", reinit);
+
+  const HeaderParser *parser_list[] = { &spdif_header, &ac3_header, &dts_header, &mpa_header };
+  header_parser.set_parsers(parser_list, array_size(parser_list));
 
   ds_sink.open_dsound(0);
   create(false);
@@ -58,14 +65,14 @@ WinampAC3::play(const char *_filename)
   /////////////////////////////////////////////////////////
   // Open file
 
-  if (file.open(&ac3_parser, _filename) && file.probe())
-  {}
-  else if (file.open(&dts_parser, _filename) && file.probe())
-  {}
-  else
+  if (!file.open(_filename, &header_parser, 1000000))
     return false;
 
-  file.stats();
+  if (!file.stats())
+    return false;
+
+  if (!file.load_frame())
+    return false;
 
   /////////////////////////////////////////////////////////
   // Determine output format
@@ -108,14 +115,21 @@ WinampAC3::play(const char *_filename)
     ctrl     = &wa_sink;
     break;
   }
-
+/*
   if (!sink->set_input(out_spk))
     if (!sink->set_input(Speakers(FORMAT_PCM16, MODE_STEREO, out_spk.sample_rate)))
       return false;
-
+*/
   dec.set_sink(sink);
   if (!dec.set_input(file.get_spk()))
     return false;
+
+  /////////////////////////////////////////////////////////
+  // Reset the file parser
+  // (otherwise we will loose the first frame that is
+  // aleready loaded for setup)
+
+  file.seek(0);
 
   /////////////////////////////////////////////////////////
   // Run!
@@ -214,7 +228,7 @@ WinampAC3::seek(int _pos)
 
   // Seek and run
   base_pos = _pos;
-  file.seek(int(base_pos), FileParser::ms);
+  file.seek(vtime_t(base_pos) / 1000, FileParser::time);
   state = state_start;
   SetEvent(ev_play);
 }
@@ -222,7 +236,7 @@ WinampAC3::seek(int _pos)
 int
 WinampAC3::get_length()
 {
-  return (int)file.get_size(FileParser::ms);
+  return (int)(file.get_size(FileParser::time) * 1000);
 }
 
 int
@@ -305,13 +319,10 @@ WinampAC3::process()
           dec.process(&chunk);
           state = state_flush;
         }
-        else
+        else if (file.load_frame())
         {
-          if (file.load_frame())
-          {
-            chunk.set_rawdata(file.get_spk(), file.get_frame(), file.get_frame_size());
-            dec.process(&chunk);
-          }
+          chunk.set_rawdata(file.get_spk(), file.get_frame(), file.get_frame_size());
+          dec.process(&chunk);
         }
       }
       else
