@@ -88,6 +88,7 @@ Controller *ConfigDlg::ctrl_spdif(HWND hdlg, IWinampAC3 *filter, IDecoder *dec, 
   ctrl->add(new ControlSpk(hdlg, dec));
   ctrl->add(new ControlPreset(hdlg, dec, proc));
   ctrl->add(new ControlSPDIF(hdlg, dec));
+  ctrl->add(new ControlSink(hdlg, filter));
   ctrl->add(new ControlSystem(hdlg, filter, dec));
   ctrl->add(new ControlInfo(hdlg, dec));
   ctrl->add(new ControlVer(hdlg));
@@ -99,6 +100,7 @@ Controller *ConfigDlg::ctrl_system(HWND hdlg, IWinampAC3 *filter, IDecoder *dec,
   ControlList *ctrl = new ControlList(hdlg);
   if (ctrl == 0) return 0;
 
+  ctrl->add(new ControlSink(hdlg, filter));
   ctrl->add(new ControlSPDIF(hdlg, dec));
   ctrl->add(new ControlSystem(hdlg, filter, dec));
   ctrl->add(new ControlAGC(hdlg, proc));

@@ -76,6 +76,10 @@ public:
   STDMETHOD (get_tray)(bool *tray) = 0;
   STDMETHOD (set_tray)(bool  tray) = 0;
 
+  // Output sink (SINK_XXXX constants)
+  STDMETHOD (get_sink)(int *sink, int *current_sink) = 0;
+  STDMETHOD (set_sink)(int  sink) = 0;
+
   // Reinit after seek/pause option
   STDMETHOD (get_reinit)(int *reinit) = 0;
   STDMETHOD (set_reinit)(int  reinit) = 0;

@@ -41,57 +41,52 @@ IDD_SYSTEM DIALOG DISCARDABLE  0, 0, 400, 224
 STYLE WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
-    LTEXT           "Attack/release speed (dB/s):",IDC_LBL_ATTACK_RELEASE,17,
-                    139,96,8
-    EDITTEXT        IDC_EDT_ATTACK,115,137,38,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDT_RELEASE,155,137,38,12,ES_AUTOHSCROLL
-    GROUPBOX        "AGC",IDC_GRP_AGC,8,128,192,26
+    LTEXT           "Attack/release speed (dB/s):",IDC_LBL_ATTACK_RELEASE,16,
+                    77,96,8
+    EDITTEXT        IDC_EDT_ATTACK,115,75,38,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDT_RELEASE,155,75,38,12,ES_AUTOHSCROLL
+    GROUPBOX        "AGC",IDC_GRP_AGC,8,66,192,26
     CONTROL         "Show tray icon",IDC_CHK_TRAY,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,84,182,8
+                    WS_TABSTOP,15,105,182,8
     CONTROL         "Invert levels",IDC_CHK_INVERT_LEVELS,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,96,182,8
-    LTEXT           "Interface update rate (ms)",IDC_LBL_REFRESH_TIME,41,110,
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,117,182,8
+    LTEXT           "Interface update rate (ms)",IDC_LBL_REFRESH_TIME,41,131,
                     149,8
-    EDITTEXT        IDC_EDT_REFRESH_TIME,15,108,22,12,ES_AUTOHSCROLL
-    GROUPBOX        "Interface options",IDC_GRP_INTERFACE,8,72,192,53
+    EDITTEXT        IDC_EDT_REFRESH_TIME,15,129,22,12,ES_AUTOHSCROLL
+    GROUPBOX        "Interface options",IDC_GRP_INTERFACE,8,93,192,53
     RTEXT           "AC3Filter ver. %s Copyright (c) 2002-2008 by Alexander Vigovsky",
                     IDC_VER,8,204,328,12,SS_CENTERIMAGE
     PUSHBUTTON      "Donate",IDC_BTN_DONATE,342,204,50,12,BS_FLAT
+    EDITTEXT        IDC_EDT_ENV,210,17,177,56,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    GROUPBOX        "Build info",IDC_GRP_ENV,204,8,188,68
+    EDITTEXT        IDC_EDT_CREDITS,210,86,177,110,ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | NOT 
+                    WS_BORDER
+    GROUPBOX        "Thanks to",IDC_GRP_CREDITS,204,76,188,124
+    LTEXT           "Please report about all bugs. Feel free to email author with your ideas, criticism, etc. Please write in English or Russian only.",
+                    IDC_LBL_CONTACT,12,159,183,27
+    CONTROL         "Homepage|http://ac3filter.net/",IDC_LNK_HOME,"Button",
+                    BS_OWNERDRAW | BS_CENTER | BS_VCENTER | BS_FLAT | 
+                    WS_TABSTOP,14,187,58,8
+    CONTROL         "Project forum|http://ac3filter.net/forum/",
+                    IDC_LNK_FORUM,"Button",BS_OWNERDRAW | BS_CENTER | 
+                    BS_VCENTER | BS_FLAT | WS_TABSTOP,75,187,58,8
+    CONTROL         "mail to author|mailto:ac3filter@gmail.com?Subject=AC3Filter",
+                    IDC_LNK_EMAIL,"Button",BS_OWNERDRAW | BS_CENTER | 
+                    BS_FLAT | WS_TABSTOP,136,187,58,8
+    GROUPBOX        "Contact author",IDC_GRP_CONTACT,8,148,192,52
     CONTROL         "Check output format support",IDC_CHK_QUERY_SINK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,169,182,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,41,177,8
     CONTROL         "Force sound card to reinit after seek / pause",
                     IDC_CHK_REINIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    183,182,8
-    GROUPBOX        "Audio output options",IDC_GRP_DSHOW,8,156,192,44
-    GROUPBOX        "Audio sink",IDC_STATIC,8,8,192,61
+                    52,172,8
+    GROUPBOX        "Audio output options",IDC_GRP_DSHOW,8,8,192,58
     CONTROL         "Winamp output plugin",IDC_RB_SINK_WINAMP,"Button",
                     BS_AUTORADIOBUTTON,15,19,85,10
     CONTROL         "Direct Sound renderer (required for SPDIF support)",
                     IDC_RB_SINK_DSOUND,"Button",BS_AUTORADIOBUTTON,15,29,175,
                     10
-    CONTROL         "WAV file:",IDC_RB_SINK_WAV,"Button",BS_AUTORADIOBUTTON | 
-                    WS_DISABLED,15,39,45,10
-    EDITTEXT        IDC_EDT_SINK_WAV,15,50,175,14,ES_AUTOHSCROLL | 
-                    WS_DISABLED
-    EDITTEXT        IDC_EDT_ENV,210,17,177,56,ES_MULTILINE | ES_AUTOVSCROLL | 
-                    ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
-    GROUPBOX        "Build info",IDC_GRP_ENV,204,8,188,68
-    EDITTEXT        IDC_EDT_CREDITS,210,85,177,59,ES_MULTILINE | 
-                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | NOT 
-                    WS_BORDER
-    GROUPBOX        "Thanks to",IDC_GRP_CREDITS,204,76,188,71
-    LTEXT           "Please report about all bugs. Feel free to email author with your ideas, criticism, etc. Please write in English or Russian only.",
-                    IDC_LBL_CONTACT,208,159,178,27
-    CONTROL         "Homepage|http://ac3filter.net/",IDC_LNK_HOME,"Button",
-                    BS_OWNERDRAW | BS_CENTER | BS_VCENTER | BS_FLAT | 
-                    WS_TABSTOP,208,187,58,8
-    CONTROL         "Project forum|http://ac3filter.net/forum/",
-                    IDC_LNK_FORUM,"Button",BS_OWNERDRAW | BS_CENTER | 
-                    BS_VCENTER | BS_FLAT | WS_TABSTOP,268,187,58,8
-    CONTROL         "mail to author|mailto:ac3filter@gmail.com?Subject=AC3Filter",
-                    IDC_LNK_EMAIL,"Button",BS_OWNERDRAW | BS_CENTER | 
-                    BS_FLAT | WS_TABSTOP,328,187,58,8
-    GROUPBOX        "Contact author",IDC_GRP_CONTACT,204,148,188,52
 END
 
 IDD_SPDIF DIALOG DISCARDABLE  0, 0, 400, 224
@@ -117,22 +112,22 @@ BEGIN
                     BS_AUTORADIOBUTTON,305,45,84,8
     GROUPBOX        "SPDIF/DTS conversion",IDC_GRP_DTS_CONV,298,8,94,56
     CONTROL         "Detect SPDIF stream in PCM data",IDC_CHK_USE_DETECTOR,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,207,77,182,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,207,74,182,8
     CONTROL         "Use AC3 encoder",IDC_CHK_SPDIF_ENCODE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,207,87,182,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,207,84,182,8
     CONTROL         "Do not encode stereo PCM",IDC_CHK_SPDIF_STEREO_PT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,97,169,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,94,169,8
     CONTROL         "Output SPDIF as PCM",IDC_CHK_SPDIF_AS_PCM,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,207,121,182,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,207,118,182,8
     CONTROL         "Restrict SPDIF sample rate",IDC_CHK_SPDIF_CHECK_SR,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,207,131,182,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,207,128,182,8
     CONTROL         "48kHz",IDC_CHK_SPDIF_ALLOW_48,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,220,141,37,8
+                    WS_TABSTOP,220,138,37,8
     CONTROL         "44kHz",IDC_CHK_SPDIF_ALLOW_44,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,267,141,37,8
+                    WS_TABSTOP,267,138,37,8
     CONTROL         "32kHz",IDC_CHK_SPDIF_ALLOW_32,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,314,141,37,8
-    GROUPBOX        "SPDIF options",IDC_GRP_SPDIF,200,64,192,92
+                    WS_TABSTOP,314,138,37,8
+    GROUPBOX        "SPDIF options",IDC_GRP_SPDIF,200,64,192,86
     EDITTEXT        IDC_EDT_INFO,13,75,178,108,ES_MULTILINE | ES_READONLY | 
                     WS_VSCROLL
     GROUPBOX        "Decoder info",IDC_GRP_DECODER_INFO,8,64,188,136
@@ -152,17 +147,20 @@ BEGIN
     EDITTEXT        IDC_EDT_ERRORS,112,184,23,12,ES_AUTOHSCROLL | 
                     ES_READONLY
     CONTROL         "Check output format support",IDC_CHK_QUERY_SINK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,207,167,182,8
+                    BS_AUTOCHECKBOX | WS_TABSTOP,207,179,177,8
     CONTROL         "Force sound card to reinit after seek / pause",
                     IDC_CHK_REINIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,207,
-                    177,182,8
-    CONTROL         "Disallow PCM output in SPDIF mode",IDC_CHK_SPDIF_NO_PCM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,207,187,182,8
-    GROUPBOX        "DirectShow options",IDC_GRP_DSHOW,200,156,192,44
-    COMBOBOX        IDC_CMB_SPDIF_BITRATE,220,107,30,115,CBS_DROPDOWNLIST | 
+                    188,172,8
+    GROUPBOX        "Audio output options",IDC_GRP_DSHOW,200,151,192,49
+    COMBOBOX        IDC_CMB_SPDIF_BITRATE,220,104,30,115,CBS_DROPDOWNLIST | 
                     WS_VSCROLL | WS_TABSTOP
     LTEXT           "AC3 encoder bitrate (kbps)",IDC_LBL_SPDIF_BITRATE,252,
-                    107,137,12,SS_CENTERIMAGE
+                    104,137,12,SS_CENTERIMAGE
+    CONTROL         "Winamp output plugin",IDC_RB_SINK_WINAMP,"Button",
+                    BS_AUTORADIOBUTTON,207,160,85,10
+    CONTROL         "Direct Sound renderer (required for SPDIF support)",
+                    IDC_RB_SINK_DSOUND,"Button",BS_AUTORADIOBUTTON,207,169,
+                    175,10
 END
 
 IDD_MIXER DIALOGEX 0, 0, 400, 224
@@ -316,7 +314,7 @@ END
 
 IDD_MAIN DIALOGEX 0, 0, 400, 224
 STYLE WS_CHILD
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     COMBOBOX        IDC_CMB_SPK,14,17,88,183,CBS_DROPDOWNLIST | WS_VSCROLL | 
                     WS_TABSTOP

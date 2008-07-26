@@ -198,6 +198,14 @@ SOURCE=.\dlg\control_preset.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\dlg\control_sink.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_sink.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\dlg\control_spdif.cpp
 # End Source File
 # Begin Source File

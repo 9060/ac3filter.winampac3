@@ -7,8 +7,6 @@
 #define IDC_EDT_FILENAME                1001
 #define IDC_RB_SINK_WINAMP              1002
 #define IDC_RB_SINK_DSOUND              1003
-#define IDC_RB_SINK_WAV                 1004
-#define IDC_EDT_SINK_WAV                1005
 
 
 

@@ -17,6 +17,7 @@
 #include "control_list.h"
 #include "control_matrix.h"
 #include "control_preset.h"
+#include "control_sink.h"
 #include "control_spdif.h"
 #include "control_spectrum.h"
 #include "control_spk.h"
