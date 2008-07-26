@@ -20,7 +20,7 @@ Main features:
 * Per-channel delays
 * Direct access to mixing matrix
   
-Copyright (c) 2002-2006 by Alexander Vigovsky (xvalex@mail.ru)
+Copyright (c) 2002-2008 by Alexander Vigovsky (xvalex@mail.ru)
 
 
 License:

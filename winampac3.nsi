@@ -40,9 +40,11 @@ Section "WinampAC3"
 
   ;; Copy Files
   File "${SOURCE_DIR}\in_winampac3.dll"
+  File "${SOURCE_DIR}\winampac3_presets.reg"
 
   ;; Install presets
-  ExecWait 'regedit /s "${SOURCE_DIR}\winampac3_presets.reg"'
+  ExecWait 'regedit /s "$INSTDIR\plugins\winampac3_presets.reg"'
+  Delete "$INSTDIR\plugins\winampac3_presets.reg"
 
 SectionEnd
 

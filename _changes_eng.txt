@@ -1,3 +1,10 @@
+<b>1.10a</b> - 27.07.08
+  * Uses AC3Filter 1.52 code base and supports all new features!
+  + New DTS passthrough method
+  + Sample rate conversion
+  + Equalizer is back!
+  + Tray icon
+
 <b>1.01a</b> - 15.09.06
   * Uses new valib (AC3Filter 1.09) and supports all new features!
   + DTS decoding support
