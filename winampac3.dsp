@@ -166,14 +166,6 @@ SOURCE=.\dlg\control_iogains.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\dlg\control_lang.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\dlg\control_lang.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\dlg\control_levels.cpp
 # End Source File
 # Begin Source File
@@ -227,14 +219,6 @@ SOURCE=.\dlg\control_spk.cpp
 # Begin Source File
 
 SOURCE=.\dlg\control_spk.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\dlg\control_sync.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\dlg\control_sync.h
 # End Source File
 # Begin Source File
 
