@@ -18,24 +18,30 @@ protected:
   HWND         parent;
   HINSTANCE    hinstance;
   DLGTEMPLATE *dlg_template;
+
+  /////////////////////////////////////////////////////////
+  // To be called by TabDlg
   
-  virtual HWND create_dlg(HINSTANCE hinstance, HWND parent);
-  virtual void destroy_dlg();
-
-  virtual void switch_on();
-  virtual void switch_off();
-
-  virtual BOOL message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-  virtual void command(int control, int message)  {};
-  virtual void init_controls()                    {};
-  virtual void init()                             {};
-
   friend class TabDlg;
+  HWND create_dlg(HINSTANCE hinstance, HWND parent);
+  void destroy_dlg();
+
+  void show() { if (hwnd) ShowWindow(hwnd, SW_SHOW); }
+  void hide() { if (hwnd) ShowWindow(hwnd, SW_HIDE); }
+
+  /////////////////////////////////////////////////////////
+  // Placeholders
+  
+  virtual void on_create() {}
+  virtual void on_destroy() {}
+  virtual void on_show() {}
+  virtual void on_hide() {}
+
+  virtual BOOL on_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) { return FALSE; }
 
 public:
   TabSheet(HMODULE hmodule, LPCSTR dlg_res);
   ~TabSheet();
-
 };
 
 class TabDlg

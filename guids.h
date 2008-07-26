@@ -5,99 +5,93 @@
 #include "spk.h"
 #include "registry.h"
 
+void cr2crlf(char *buf, int size);
+
+#define gettext(x) x
+#define N_(x) x
+#define _(x) x
+
 // Output sink
 #define SINK_WINAMP   0
 #define SINK_DSOUND   1
 
-// SPDIF mode
-#define SPDIF_MODE_NONE                0  // see dvd_graph.h
-#define SPDIF_MODE_DISABLED            1  // see dvd_graph.h
-#define SPDIF_MODE_PASSTHROUGH         2  // see dvd_graph.h
-#define SPDIF_MODE_ENCODE              3  // see dvd_graph.h
-
-// Registry keys
+// registry key
 #define REG_KEY        "Software\\WinampAC3"
 #define REG_KEY_PRESET "Software\\WinampAC3\\preset"
 #define REG_KEY_MATRIX "Software\\WinampAC3\\matrix"
+#define REG_KEY_EQ     "Software\\WinampAC3\\equalizer"
 
 // preset settings
 #define PRESET_SPK    0x01 // Speakers configuration: 
-                     // spk
+                           // spk
 #define PRESET_PROC   0x02 // Audio processor settings:
-                     // auto_gain, normalize, auto_matrix, normalize_matrix, voice_control, expand_stereo,
-                     // drc, drc_power, master, clev, slev, lfelev
+                           // auto_gain, normalize, auto_matrix, normalize_matrix, voice_control, expand_stereo,
+                           // drc, drc_power, master, clev, slev, lfelev
 #define PRESET_GAINS  0x04 // Input/output gains: 
-                     // input_gains, output_gains
+                           // input_gains, output_gains
 #define PRESET_MATRIX 0x08 // Mixing matrix:
-                     // matrix
+                           // matrix
 #define PRESET_DELAY  0x10 // Delay settings:
-                     // delay, delay_units, delays
-#define PRESET_SYNC   0x20 // Syncronization settings:
-                     // time_shift, time_factor, dejitter, threshold
-#define PRESET_SYS    0x40 // System settings: 
-                     // formats, spdif, config_autoload, 
+                           // delay, delay_units, delays
+#define PRESET_EQ     0x20 // Equalizer
+#define PRESET_SYNC   0x40 // Syncronization settings:
+                           // time_shift, time_factor, dejitter, threshold
+#define PRESET_SYS    0x80 // System settings: 
+                           // formats, spdif, config_autoload, 
 
-#define PRESET_ALL    0x7f // all settings
-#define PRESET_PRESET 0x1e // settings that saved into preset (all except system settings, sync and speaker config)
+#define PRESET_ALL    0xff // all settings
+#define PRESET_PRESET 0x3f // settings that saved into preset (all except system settings and sync)
 
-void cr2crlf(char *buf, int size);
+// Constants from dvd_graph.h
+#define SPDIF_MODE_NONE                0
+#define SPDIF_MODE_DISABLED            1
+#define SPDIF_MODE_PASSTHROUGH         2
+#define SPDIF_MODE_ENCODE              3
+
+// Constants from spdif_wrapper.h
+#define DTS_MODE_AUTO    0
+#define DTS_MODE_WRAPPED 1
+#define DTS_MODE_PADDED  2
+
+#define DTS_CONV_NONE    0
+#define DTS_CONV_16BIT   1
+#define DTS_CONV_14BIT   2
+
+#define EQ_BANDS 10
 
 ///////////////////////////////////////////////////////////////////////////////
-// Interface definitions
+// Interfaces
 ///////////////////////////////////////////////////////////////////////////////
 
 class IWinampAC3;
 class IDecoder;
-class IAudioProcessor;
 struct AudioProcessorState;
+class IAudioProcessor;
+
 
 class IWinampAC3
 {
 public:
-  /////////////////////////////////////////////////////////
-  // Winamp control interface
-  // Called by winamp (control thread)
+  // Tray icon
+  STDMETHOD (get_tray)(bool *tray) = 0;
+  STDMETHOD (set_tray)(bool  tray) = 0;
 
-  // Playback control
-  virtual bool play(const char *filename) = 0;
-  virtual bool stop() = 0;
-  virtual const char *get_filename() = 0;
-
-  virtual void pause() = 0;
-  virtual void unpause() = 0;
-  virtual bool is_paused() = 0;
-
-  // Positioning
-  virtual void  seek(int seek_pos) = 0;
-  virtual int   get_length() = 0;
-  virtual int   get_pos() = 0;
-
-  /////////////////////////////////////////////////////////
-  // User interface
-  // Called from config dialog (control thread)
-
-  // Setup sink used for output (SINK_XXXX constants)
-  STDMETHOD (get_sink)(int *sink, int *current_sink = 0) = 0;
-  STDMETHOD (set_sink)(int  sink) = 0;
-
-  // Reinit sound card after pause option
+  // Reinit after seek/pause option
   STDMETHOD (get_reinit)(int *reinit) = 0;
   STDMETHOD (set_reinit)(int  reinit) = 0;
 
-  // Various info
+  // Timing
   STDMETHOD (get_playback_time)(vtime_t *time) = 0;
+
+  // CPU usage
   STDMETHOD (get_cpu_usage)(double *cpu_usage) = 0;
-  STDMETHOD (get_env)(char *buf, int size) = 0;
 
-  /////////////////////////////////////////////////////////
-  // Other interfaces
-  // This interfaces are used in config dialog (control thread)
+  // Build and environment info
+  STDMETHOD (get_env) (char *buf, int size) = 0;
 
-  virtual IDecoder        *get_decoder() = 0;
+  virtual IDecoder *get_decoder() = 0;
   virtual IAudioProcessor *get_audio_processor() = 0;
 };
-
-
 
 class IDecoder
 {
@@ -117,6 +111,10 @@ public:
   // Query sink about output format support
   STDMETHOD (get_query_sink) (bool *query_sink) = 0;
   STDMETHOD (set_query_sink) (bool  query_sink) = 0;
+
+  // Use detector
+  STDMETHOD (get_use_detector) (bool *use_detector) = 0;
+  STDMETHOD (set_use_detector) (bool  use_detector) = 0;
 
   // Use SPDIF if possible
   STDMETHOD (get_use_spdif) (bool *use_spdif) = 0;
@@ -138,6 +136,10 @@ public:
   STDMETHOD (get_spdif_stereo_pt)(bool *spdif_stereo_pt) = 0;
   STDMETHOD (set_spdif_stereo_pt)(bool  spdif_stereo_pt) = 0;
 
+  // SPDIF bitrate
+  STDMETHOD (get_spdif_bitrate)(int *spdif_bitrate) = 0;
+  STDMETHOD (set_spdif_bitrate)(int  spdif_bitrate) = 0;
+
   // SPDIF check sample rate
   STDMETHOD (get_spdif_check_sr)(bool *spdif_check_sr) = 0;
   STDMETHOD (set_spdif_check_sr)(bool  spdif_check_sr) = 0;
@@ -147,6 +149,14 @@ public:
   STDMETHOD (set_spdif_allow_44)(bool  spdif_allow_44) = 0;
   STDMETHOD (get_spdif_allow_32)(bool *spdif_allow_32) = 0;
   STDMETHOD (set_spdif_allow_32)(bool  spdif_allow_32) = 0;
+
+  // SPDIF/DTS output mode
+  STDMETHOD (get_dts_mode) (int *dts_mode) = 0;
+  STDMETHOD (set_dts_mode) (int  dts_mode) = 0;
+
+  // SPDIF/DTS conversion
+  STDMETHOD (get_dts_conv) (int *dts_conv) = 0;
+  STDMETHOD (set_dts_conv) (int  dts_conv) = 0;
 
   // SPDIF status
   STDMETHOD (get_spdif_status)(int *spdif_status) = 0;
@@ -203,6 +213,11 @@ struct AudioProcessorState
   // Input/output levels
   sample_t input_levels[NCHANNELS];
   sample_t output_levels[NCHANNELS];
+
+  // Equalizer
+  bool     eq;
+  int      eq_freq[EQ_BANDS];
+  double   eq_gain[EQ_BANDS];
 
   // Matrix
   matrix_t matrix;
@@ -275,6 +290,15 @@ public:
   STDMETHOD (set_bass_redir)   (bool  bass_redir) = 0;
   STDMETHOD (get_bass_freq)    (int  *bass_freq) = 0;
   STDMETHOD (set_bass_freq)    (int   bass_freq) = 0;
+  // Eqalizer
+  STDMETHOD (get_eq)           (bool *eq) = 0;
+  STDMETHOD (set_eq)           (bool  eq) = 0;
+  STDMETHOD (get_eq_bands)     (int *freqs, double *gains) = 0;
+  STDMETHOD (set_eq_bands)     (const int *freqs, const double *gains) = 0;
+  // Spectrum
+  STDMETHOD (get_spectrum_length) (size_t *length) = 0;
+  STDMETHOD (set_spectrum_length) (size_t  length) = 0;
+  STDMETHOD (get_spectrum)     (sample_t *data, double *bin2hz) = 0;
   // Delay
   STDMETHOD (get_delay)        (bool *delay) = 0;
   STDMETHOD (set_delay)        (bool  delay) = 0;
@@ -286,5 +310,6 @@ public:
   STDMETHOD (get_state)        (AudioProcessorState *state, vtime_t time = 0) = 0;
   STDMETHOD (set_state)        (AudioProcessorState *state) = 0;
 };
+
 
 #endif

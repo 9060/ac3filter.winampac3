@@ -1,7 +1,7 @@
 #include "winamp.h"
 #include "winampac3.h"
 
-#include "resource.h"
+#include "resource_ids.h"
 #include "dlg_info.h"
 #include "dlg_conf.h"
 
@@ -9,7 +9,7 @@
 #include "parsers\ac3\ac3_header.h"
 #include "parsers\dts\dts_header.h"
 #include "parsers\mpa\mpa_header.h"
-#include "parsers\spdif_header.h"
+#include "parsers\spdif\spdif_header.h"
 #include "parsers\multi_header.h"
 
 
@@ -97,22 +97,26 @@ void config(HWND parent)
   dlg.add_page(0, sheet, "Main");
   sheet = ConfigDlg::create_mixer(hinstance, winampac3);
   dlg.add_page(1, sheet, "Mixer");
+  sheet = ConfigDlg::create_eq(hinstance, winampac3);
+  dlg.add_page(2, sheet, "Equalizer");
   sheet = ConfigDlg::create_gains(hinstance, winampac3);
-  dlg.add_page(2, sheet, "Gains");
+  dlg.add_page(3, sheet, "Gains");
+  sheet = ConfigDlg::create_spdif(hinstance, winampac3);
+  dlg.add_page(4, sheet, "SPDIF");
   sheet = ConfigDlg::create_system(hinstance, winampac3);
-  dlg.add_page(3, sheet, "System");
-  sheet = ConfigDlg::create_about(hinstance, winampac3);
-  dlg.add_page(4, sheet, "About");
+  dlg.add_page(5, sheet, "System");
   dlg.exec("WinampAC3 configuration");
 }
 
 void about(HWND parent)
 {
+/*
   TabDlg dlg(hinstance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
   ConfigDlg *sheet;
   sheet = ConfigDlg::create_about(hinstance, winampac3);
   dlg.add_page(0, sheet, "About");
   dlg.exec("WinampAC3 configuration");
+*/
 }
 
 void init() 

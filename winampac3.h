@@ -26,6 +26,7 @@ protected:
   In_Module  *mod;
   CPUMeter    cpu;
 
+  bool tray;
   int isink;
   int reinit;
 
@@ -80,6 +81,10 @@ public:
   /////////////////////////////////////////////////////////
   // User interface
   // Called from config dialog (control thread)
+
+  // Tray icon
+  STDMETHODIMP get_tray(bool *tray);
+  STDMETHODIMP set_tray(bool tray);
 
   // Setup sink used for output (SINK_XXXX constants)
   STDMETHODIMP get_sink(int *sink, int *current_sink);

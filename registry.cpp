@@ -4,6 +4,7 @@
 #include <math.h>
 #include "registry.h"
 
+
 RegistryKey::RegistryKey()
 {
   key = 0;
@@ -47,7 +48,7 @@ RegistryKey::create_key(LPCTSTR name, HKEY hive)
     key = 0;
 
   // split path and subkey name
-  const buf_size = 255;
+  const int buf_size = 255;
   CHAR path[buf_size];
   CHAR subkey[buf_size];
   LPCTSTR name_end = name + strlen(name) - 1;
@@ -137,7 +138,6 @@ RegistryKey::get_float(LPCTSTR name, double &value)
 
   DWORD type, buf_len;
   char buf[256];
-  char *stopstr;
   buf_len = 256;
 
   if (RegQueryValueEx(key, name, NULL, &type, (LPBYTE)&buf, &buf_len) != ERROR_SUCCESS)
@@ -146,9 +146,12 @@ RegistryKey::get_float(LPCTSTR name, double &value)
   if (type != REG_SZ)
     return false;
 
-  double v = strtod(buf, &stopstr);
-  if (buf == stopstr || errno == ERANGE)
+  double v = 0.0;
+  char tmp;
+  if (sscanf(buf, "%lg%c", &v, &tmp) != 1)
+  {
     return false;
+  }
 
   value = v;
   return true;
@@ -195,7 +198,7 @@ RegistryKey::set_float(LPCTSTR name, double _value)
   if (!key) return;
 
   char buf[256];
-  sprintf(buf, "%f", _value);
+  sprintf(buf, "%lg", _value);
   RegSetValueEx(key, name, NULL, REG_SZ, (LPBYTE)&buf, strlen(buf)+1);
 }
 
@@ -204,7 +207,10 @@ RegistryKey::set_text(LPCTSTR name, const char *_value)
 {
   if (!key) return;
 
-  RegSetValueEx(key, name, NULL, REG_SZ, (LPBYTE)_value, strlen(_value)+1);
+  if (_value)
+    RegSetValueEx(key, name, NULL, REG_SZ, (LPBYTE)_value, strlen(_value)+1);
+  else
+    RegSetValueEx(key, name, NULL, REG_SZ, (LPBYTE)"", 1);
 }
 
 
@@ -260,12 +266,15 @@ FileConfig::get_int32(LPCTSTR name, int32_t &value)
 {
   if (!ok) return false;
   char buf[256];
-  char *stopstr;
 
   if (!GetPrivateProfileString(section, name, "default", buf, 128, filename)) return false;
-  int32_t v = strtol(buf, &stopstr, 10);
-  if (buf == stopstr || errno == ERANGE)
+
+  int v = 0;
+  char tmp;
+  if (sscanf(buf, "%i%c", &v, &tmp) != 1)
+  {
     return false;
+  }
 
   value = v;
   return true;
@@ -276,12 +285,15 @@ FileConfig::get_double(LPCTSTR name, double &value)
 {
   if (!ok) return false;
   char buf[256];
-  char *stopstr;
 
   if (!GetPrivateProfileString(section, name, "default", buf, 128, filename)) return false;
-  double v = strtod(buf, &stopstr);
-  if (buf == stopstr || errno == ERANGE)
+
+  double v = 0.0;
+  char tmp;
+  if (sscanf(buf, "%lg%c", &v, &tmp) != 1)
+  {
     return false;
+  }
 
   value = v;
   return true;

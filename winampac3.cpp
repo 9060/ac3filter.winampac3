@@ -2,14 +2,15 @@
 #include "parsers\ac3\ac3_header.h"
 #include "parsers\dts\dts_header.h"
 #include "parsers\mpa\mpa_header.h"
-#include "parsers\spdif_header.h"
+#include "parsers\spdif\spdif_header.h"
 #include "parsers\multi_header.h"
 
 WinampAC3::WinampAC3(In_Module *_mod):
-wa_sink(_mod)
+wa_sink(_mod), dec(2048)
 {
   mod      = _mod;
 
+  tray     = false;
   isink    = 0;
   reinit   = 0;
 
@@ -23,6 +24,7 @@ wa_sink(_mod)
   ev_stop  = CreateEvent(0, true, true,  0);
 
   RegistryKey reg(REG_KEY);
+  reg.get_bool ("tray", tray);
   reg.get_int32("sink", isink);
   reg.get_int32("reinit", reinit);
 
@@ -115,11 +117,7 @@ WinampAC3::play(const char *_filename)
     ctrl     = &wa_sink;
     break;
   }
-/*
-  if (!sink->set_input(out_spk))
-    if (!sink->set_input(Speakers(FORMAT_PCM16, MODE_STEREO, out_spk.sample_rate)))
-      return false;
-*/
+
   dec.set_sink(sink);
   if (!dec.set_input(file.get_spk()))
     return false;
@@ -356,6 +354,36 @@ WinampAC3::process()
 
 /////////////////////////////////////////////////////////
 // User interface (used in config dialog)
+
+// Tray icon
+
+STDMETHODIMP WinampAC3::get_tray(bool *_tray)
+{
+  if (_tray)
+    *_tray = tray;
+  return S_OK;
+}
+
+STDMETHODIMP WinampAC3::set_tray(bool _tray)
+{
+  tray = _tray;
+  RegistryKey reg(REG_KEY);
+  reg.set_bool("tray", tray);
+/*
+  /////////////////////////////////////////////////////////
+  // Show tray icon if enabled.
+  //
+  // We cannot hide tray icon when user disables this
+  // option because it may be disabled from config dialog
+  // called from tray icon. During hiding config dialog
+  // is destructed and caller of this function became
+  // invalid.
+
+  if (tray)
+    tray_ctl.show();
+*/
+  return S_OK;
+}
 
 // Setup sink used for output (SINK_XXXX constants)
 

@@ -19,7 +19,7 @@ protected:
 public:
   CritSec config;
 
-  COMDecoder();
+  COMDecoder(int nsamples);
 
   /////////////////////////////////////////////////////////
   // DVDGraph interface
@@ -68,6 +68,10 @@ public:
   /////////////////////////////////////
   // SPDIF options
 
+  // Use detector
+  STDMETHODIMP get_use_detector(bool *use_detector);
+  STDMETHODIMP set_use_detector(bool  use_detector);
+
   // Use SPDIF if possible
   STDMETHODIMP get_use_spdif(bool *use_spdif);
   STDMETHODIMP set_use_spdif(bool  use_spdif);
@@ -88,6 +92,10 @@ public:
   STDMETHODIMP get_spdif_stereo_pt(bool *spdif_stereo_pt);
   STDMETHODIMP set_spdif_stereo_pt(bool  spdif_stereo_pt);
 
+  // SPDIF bitrate
+  STDMETHODIMP get_spdif_bitrate(int *spdif_bitrate);
+  STDMETHODIMP set_spdif_bitrate(int  spdif_bitrate);
+
   // SPDIF check sample rate
   STDMETHODIMP get_spdif_check_sr(bool *spdif_check_sr);
   STDMETHODIMP set_spdif_check_sr(bool  spdif_check_sr);
@@ -97,6 +105,14 @@ public:
   STDMETHODIMP set_spdif_allow_44(bool  spdif_allow_44);
   STDMETHODIMP get_spdif_allow_32(bool *spdif_allow_32);
   STDMETHODIMP set_spdif_allow_32(bool  spdif_allow_32);
+
+  // SPDIF/DTS output mode
+  STDMETHODIMP get_dts_mode(int *dts_mode);
+  STDMETHODIMP set_dts_mode(int  dts_mode);
+
+  // SPDIF/DTS conversion
+  STDMETHODIMP get_dts_conv(int *dts_conv);
+  STDMETHODIMP set_dts_conv(int  dts_conv);
 
   // SPDIF status
   STDMETHODIMP get_spdif_status(int *spdif_status);
@@ -166,6 +182,15 @@ public:
   STDMETHODIMP set_bass_redir   (bool  bass_redir);
   STDMETHODIMP get_bass_freq    (int  *bass_freq);
   STDMETHODIMP set_bass_freq    (int   bass_freq);
+  // Eqalizer
+  STDMETHODIMP get_eq           (bool *eq);
+  STDMETHODIMP set_eq           (bool  eq);
+  STDMETHODIMP get_eq_bands     (int *freq, double *gain);
+  STDMETHODIMP set_eq_bands     (const int *freq, const double *gain);
+  // Spectrum
+  STDMETHODIMP get_spectrum_length (size_t *length);
+  STDMETHODIMP set_spectrum_length (size_t  length);
+  STDMETHODIMP get_spectrum      (sample_t *data, double *bin2hz);
   // Delay
   STDMETHODIMP get_delay        (bool *delay);
   STDMETHODIMP set_delay        (bool  delay);

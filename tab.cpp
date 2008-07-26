@@ -10,16 +10,36 @@ TabSheet::DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   if (uMsg == WM_INITDIALOG)
   {
     SetWindowLong(hwnd, DWL_USER, lParam);
-
     dlg = (TabSheet *)lParam;
     if (!dlg) return TRUE;
-    dlg->hwnd = hwnd;
   }
 
   dlg = (TabSheet *)GetWindowLong(hwnd, DWL_USER);
   if (!dlg) return FALSE;
 
-  return dlg->message(hwnd, uMsg, wParam, lParam);
+  switch (uMsg)
+  {
+    case WM_INITDIALOG:
+      dlg->hwnd = hwnd;
+      dlg->on_create();
+      break;
+
+    case WM_DESTROY:
+      dlg->on_destroy();
+      dlg->hwnd = 0;
+      dlg->parent = 0;
+      dlg->hinstance = 0;
+      break;
+
+    case WM_SHOWWINDOW:
+      if (wParam == 0)
+        dlg->on_hide();
+      else
+        dlg->on_show();
+      break;
+  }
+
+  return dlg->on_message(hwnd, uMsg, wParam, lParam);
 }
 
 TabSheet::TabSheet(HMODULE hmodule, LPCSTR dlg_res) 
@@ -52,45 +72,8 @@ void
 TabSheet::destroy_dlg()
 {
   if (!hwnd) return;
-
   DestroyWindow(hwnd);
-
-  hwnd = 0;
-  parent = 0;
-  hinstance = 0;
 }
-
-void TabSheet::switch_on()
-{
-  if (hwnd) ShowWindow(hwnd, SW_SHOW);
-}
-
-void TabSheet::switch_off()
-{
-  if (hwnd) ShowWindow(hwnd, SW_HIDE);
-}
-
-
-BOOL 
-TabSheet::message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  switch (uMsg)
-  {
-    case WM_INITDIALOG:
-      init();
-      init_controls();
-      return TRUE;
-
-    case WM_COMMAND:
-      command(LOWORD(wParam), HIWORD(wParam));
-      return TRUE;
-  }
-  return FALSE;
-}
-
-
-
-
 
 
 
@@ -149,8 +132,6 @@ TabDlg::init()
   int i;
   TCITEM tie;
   RECT dlg_rect, tab_rect;
-//  const max_str = 255;
-//  char str[max_str];
 
   memset(&tie, 0, sizeof(tie));
   memset(&dlg_rect, 0, sizeof(dlg_rect));
@@ -161,7 +142,6 @@ TabDlg::init()
   {
     pages[i]->create_dlg(hinstance, hwnd);
 
-//    GetWindowText(pages[i]->hwnd, str, max_str);
     tie.pszText = titles[i];
     TabCtrl_InsertItem(tab_ctl, i, &tie); 
 
@@ -170,12 +150,12 @@ TabDlg::init()
     if (dlg_rect.bottom - dlg_rect.top > tab_rect.bottom) tab_rect.bottom = dlg_rect.bottom - dlg_rect.top;
   }
 
-  DWORD base_units = GetDialogBaseUnits(); 
-  int cx_margin = LOWORD(base_units) / 4; 
+  DWORD base_units = GetDialogBaseUnits();
+  int cx_margin = LOWORD(base_units) / 4;
   int cy_margin = HIWORD(base_units) / 8;
 
   TabCtrl_AdjustRect(tab_ctl, TRUE, &tab_rect);
-  OffsetRect(&tab_rect, cx_margin - tab_rect.left, cy_margin - tab_rect.top); 
+  OffsetRect(&tab_rect, cx_margin - tab_rect.left, cy_margin - tab_rect.top);
   memcpy(&dlg_rect, &tab_rect, sizeof(RECT));
   TabCtrl_AdjustRect(tab_ctl, FALSE, &dlg_rect);
 
@@ -189,7 +169,7 @@ TabDlg::init()
       dlg_rect.right - dlg_rect.left, dlg_rect.bottom - dlg_rect.top, 0);
 
   active_page = 0;
-  if (page_count) pages[active_page]->switch_on();
+  if (page_count) pages[active_page]->show();
 }
 
 int 
@@ -225,8 +205,8 @@ TabDlg::switch_to(int page)
 {
   if (page >= page_count || page < 0) return;
 
-  pages[active_page]->switch_off();
-  pages[page]->switch_on();
+  pages[active_page]->hide();
+  pages[page]->show();
   active_page = page;
 }
 

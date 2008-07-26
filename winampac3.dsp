@@ -93,6 +93,166 @@ PostBuild_Cmds=_copy_test.bat
 
 # Name "winampac3 - Win32 Release"
 # Name "winampac3 - Win32 Debug"
+# Begin Group "Dialog"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\dlg\control_about.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_about.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_agc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_agc.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_all.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_bass.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_bass.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_cpu.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_cpu.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_delay.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_delay.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_eq.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_eq.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_info.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_info.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_iogains.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_iogains.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_lang.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_lang.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_levels.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_levels.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_list.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_list.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_matrix.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_matrix.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_preset.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_preset.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_spdif.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_spdif.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_spectrum.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_spectrum.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_spk.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_spk.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_sync.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_sync.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_system.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_system.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_ver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\dlg\control_ver.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ac3filter.bmp
