@@ -247,10 +247,6 @@ SOURCE=.\dlg\control_ver.h
 # End Group
 # Begin Source File
 
-SOURCE=.\ac3filter.bmp
-# End Source File
-# Begin Source File
-
 SOURCE=.\com_dec.cpp
 # End Source File
 # Begin Source File
@@ -307,6 +303,14 @@ SOURCE=.\tab.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\tray.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tray.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\winamp.cpp
 # End Source File
 # Begin Source File
@@ -336,6 +340,10 @@ SOURCE=.\winampac3.def
 # Begin Source File
 
 SOURCE=.\winampac3.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\winampac3.ico
 # End Source File
 # Begin Source File
 

@@ -10,6 +10,7 @@
 
 #include "guids.h"
 #include "winamp.h"
+#include "tray.h"
 #include "win32\thread.h"
 #include "win32\cpu.h"
 
@@ -29,6 +30,8 @@ protected:
   bool tray;
   int isink;
   int reinit;
+
+  WinampAC3Tray tray_ctl;
 
   // Decoding process objects
   MultiHeader header_parser;
@@ -99,8 +102,12 @@ public:
   STDMETHODIMP get_env(char *buf, int size);
 
   /////////////////////////////////////////////////////////
+  // Config
+
+  STDMETHODIMP config(HWND parent);
+
+  /////////////////////////////////////////////////////////
   // Other interfaces
-  // This interfaces are used in config dialog (control thread)
 
   virtual IDecoder        *get_decoder();
   virtual IAudioProcessor *get_audio_processor();

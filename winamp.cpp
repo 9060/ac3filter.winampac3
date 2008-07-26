@@ -1,9 +1,7 @@
 #include "winamp.h"
 #include "winampac3.h"
 
-#include "resource_ids.h"
 #include "dlg_info.h"
-#include "dlg_conf.h"
 
 #include "parsers\file_parser.h"
 #include "parsers\ac3\ac3_header.h"
@@ -86,34 +84,20 @@ WinampAC3       *winampac3;
 IAudioProcessor *proc;
 IDecoder        *dec;
 
-HINSTANCE     hinstance;
+HINSTANCE winampac3_instance;
 
 
 void config(HWND parent)
 {
-  TabDlg dlg(hinstance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
-  ConfigDlg *sheet;
-  sheet = ConfigDlg::create_main(hinstance, winampac3);
-  dlg.add_page(0, sheet, "Main");
-  sheet = ConfigDlg::create_mixer(hinstance, winampac3);
-  dlg.add_page(1, sheet, "Mixer");
-  sheet = ConfigDlg::create_eq(hinstance, winampac3);
-  dlg.add_page(2, sheet, "Equalizer");
-  sheet = ConfigDlg::create_gains(hinstance, winampac3);
-  dlg.add_page(3, sheet, "Gains");
-  sheet = ConfigDlg::create_spdif(hinstance, winampac3);
-  dlg.add_page(4, sheet, "SPDIF");
-  sheet = ConfigDlg::create_system(hinstance, winampac3);
-  dlg.add_page(5, sheet, "System");
-  dlg.exec("WinampAC3 configuration");
+  winampac3->config(parent);
 }
 
 void about(HWND parent)
 {
 /*
-  TabDlg dlg(hinstance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
+  TabDlg dlg(winampac3_instance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
   ConfigDlg *sheet;
-  sheet = ConfigDlg::create_about(hinstance, winampac3);
+  sheet = ConfigDlg::create_about(winampac3_instance, winampac3);
   dlg.add_page(0, sheet, "About");
   dlg.exec("WinampAC3 configuration");
 */
@@ -176,7 +160,7 @@ void getfileinfo(char *filename, char *title, int *length_in_ms)
 
 int infodlg(char *filename, HWND hwndParent)
 {
-  InfoDlg dlg(hinstance, hwndParent, filename); 
+  InfoDlg dlg(winampac3_instance, hwndParent, filename); 
   dlg.run();
   return 0;
 }
@@ -205,7 +189,7 @@ void setpan(int pan)       { winampac3->set_pan(pan);           }
 
 BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-  hinstance = hModule;
+  winampac3_instance = hModule;
   return TRUE;
 }
 

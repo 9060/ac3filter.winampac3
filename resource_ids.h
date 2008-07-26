@@ -1,6 +1,7 @@
 ///////////////////////////////////////////////////////////
 // WinampAC3 specific
 
+#define IDI_WINAMPAC3                   101
 #define IDD_FILEINFO                    109
 #define IDD_TABDLG                      110
 #define IDC_EDT_FILEINFO                1000

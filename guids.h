@@ -5,6 +5,8 @@
 #include "spk.h"
 #include "registry.h"
 
+extern HINSTANCE winampac3_instance;
+
 void cr2crlf(char *buf, int size);
 
 #define gettext(x) x
@@ -63,9 +65,9 @@ void cr2crlf(char *buf, int size);
 // Interfaces
 ///////////////////////////////////////////////////////////////////////////////
 
+struct AudioProcessorState;
 class IWinampAC3;
 class IDecoder;
-struct AudioProcessorState;
 class IAudioProcessor;
 
 
@@ -93,8 +95,12 @@ public:
   // Build and environment info
   STDMETHOD (get_env) (char *buf, int size) = 0;
 
+  // Interfaces
   virtual IDecoder *get_decoder() = 0;
   virtual IAudioProcessor *get_audio_processor() = 0;
+
+  // Config dialog
+  STDMETHOD (config) (HWND parent) = 0;
 };
 
 class IDecoder

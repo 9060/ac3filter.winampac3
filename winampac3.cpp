@@ -5,8 +5,11 @@
 #include "parsers\spdif\spdif_header.h"
 #include "parsers\multi_header.h"
 
+#include "resource_ids.h"
+#include "dlg_conf.h"
+
 WinampAC3::WinampAC3(In_Module *_mod):
-wa_sink(_mod), dec(2048)
+wa_sink(_mod), dec(2048), tray_ctl((IWinampAC3 *)this)
 {
   mod      = _mod;
 
@@ -132,6 +135,9 @@ WinampAC3::play(const char *_filename)
   /////////////////////////////////////////////////////////
   // Run!
 
+  if (tray)
+    tray_ctl.show();
+
   state = state_start;
   SetEvent(ev_play);
   return true;
@@ -153,6 +159,7 @@ WinampAC3::stop()
   file.close();
   wa_sink.close();
   ds_sink.close();
+  tray_ctl.hide();
 
   return true;
 }
@@ -347,6 +354,8 @@ WinampAC3::process()
       break;
     }
   }
+
+  SetEvent(ev_stop);
   cpu.stop();
   return 0;
 }
@@ -369,7 +378,7 @@ STDMETHODIMP WinampAC3::set_tray(bool _tray)
   tray = _tray;
   RegistryKey reg(REG_KEY);
   reg.set_bool("tray", tray);
-/*
+
   /////////////////////////////////////////////////////////
   // Show tray icon if enabled.
   //
@@ -379,9 +388,9 @@ STDMETHODIMP WinampAC3::set_tray(bool _tray)
   // is destructed and caller of this function became
   // invalid.
 
-  if (tray)
+  if (tray && state != state_stop)
     tray_ctl.show();
-*/
+
   return S_OK;
 }
 
@@ -459,5 +468,27 @@ WinampAC3::get_env(char *_buf, int _size)
   int len = strlen(env) + 1;
   memcpy(_buf, env, MIN(_size, len));
   cr2crlf(_buf, _size);
+  return S_OK;
+}
+
+// Config dialog
+STDMETHODIMP
+WinampAC3::config(HWND parent)
+{
+  TabDlg dlg(winampac3_instance, MAKEINTRESOURCE(IDD_TABDLG), parent); 
+  ConfigDlg *sheet;
+  sheet = ConfigDlg::create_main(winampac3_instance, this);
+  dlg.add_page(0, sheet, "Main");
+  sheet = ConfigDlg::create_mixer(winampac3_instance, this);
+  dlg.add_page(1, sheet, "Mixer");
+  sheet = ConfigDlg::create_eq(winampac3_instance, this);
+  dlg.add_page(2, sheet, "Equalizer");
+  sheet = ConfigDlg::create_gains(winampac3_instance, this);
+  dlg.add_page(3, sheet, "Gains");
+  sheet = ConfigDlg::create_spdif(winampac3_instance, this);
+  dlg.add_page(4, sheet, "SPDIF");
+  sheet = ConfigDlg::create_system(winampac3_instance, this);
+  dlg.add_page(5, sheet, "System");
+  dlg.exec("WinampAC3 configuration");
   return S_OK;
 }
